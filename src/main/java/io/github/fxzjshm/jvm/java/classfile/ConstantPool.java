@@ -35,7 +35,7 @@ public abstract class ConstantPool {
         protected int /* constant pool index */ classIndex, nameIndex, nameAndTypeIndex, descriptorIndex, referenceKind, refernceIndex, bootstrapMethodAttrIndex;
     }
 
-    public static ConstantInfo[] constantPool(ClassReader reader) throws IOException {
+    public static ConstantInfo[] constantPool(ByteArrayReader reader) throws IOException {
         int cpCount = reader.readUint16();
         ConstantInfo[] cp = new ConstantInfo[cpCount];
         for (int i = 1; i < cpCount; i++) {
@@ -58,9 +58,9 @@ public abstract class ConstantPool {
                     i++;
                     break;
                 case CONSTANT_Utf8:
-                    int length = reader.readUint16();
-                    byte[] bytes = reader.readBytes(length);
-                    ci.info = new DataInputStream(new ByteArrayInputStream(bytes)).readUTF();
+                    // int length = reader.readUint16();
+                    // byte[] bytes = reader.readBytes(length);
+                    ci.info = new DataInputStream(reader).readUTF();
                     break;
                 case CONSTANT_String:
                 case CONSTANT_Class:
@@ -94,9 +94,6 @@ public abstract class ConstantPool {
                     break;
                 default:
                     throw new ClassFormatError("constant pool tag!");
-            }
-            if (ci.info == null) {
-                ci.info = cinfo;
             }
             cp[i] = ci;
         }

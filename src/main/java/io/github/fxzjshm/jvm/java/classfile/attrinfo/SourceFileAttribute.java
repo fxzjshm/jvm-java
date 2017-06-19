@@ -1,6 +1,6 @@
 package io.github.fxzjshm.jvm.java.classfile.attrinfo;
 
-import io.github.fxzjshm.jvm.java.classfile.ClassReader;
+import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
 import io.github.fxzjshm.jvm.java.classfile.ConstantPool.ConstantInfo;
 
 /**
@@ -14,7 +14,7 @@ public class SourceFileAttribute implements AttrbuteInfos.AttributeInfo {
     public int sourceFileIndex;
 
     @Override
-    public void readInfo(ClassReader reader) {
+    public void readInfo(ByteArrayReader reader) {
         sourceFileIndex = reader.readUint16();
     }
 }

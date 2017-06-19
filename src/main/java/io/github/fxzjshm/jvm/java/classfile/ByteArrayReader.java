@@ -2,9 +2,9 @@ package io.github.fxzjshm.jvm.java.classfile;
 
 import java.io.ByteArrayInputStream;
 
-public class ClassReader extends ByteArrayInputStream {
+public class ByteArrayReader extends ByteArrayInputStream {
 
-    public ClassReader(byte[] buf) {
+    public ByteArrayReader(byte[] buf) {
         super(buf);
     }
 

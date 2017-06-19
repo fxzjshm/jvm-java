@@ -19,7 +19,7 @@ public class ClassFile {
     /**
      * Class reader for this class file.
      */
-    public ClassReader reader;
+    public ByteArrayReader reader;
     /**
      * Versions.
      */
@@ -37,7 +37,7 @@ public class ClassFile {
     public AttributeInfo[] attributes;
 
     @SuppressWarnings("OverridableMethodCallInConstructor")
-    public ClassFile(ClassReader reader) throws IOException {
+    public ClassFile(ByteArrayReader reader) throws IOException {
         this.reader = reader;
 
         // Magic number

@@ -1,6 +1,6 @@
 package io.github.fxzjshm.jvm.java.classfile.attrinfo;
 
-import io.github.fxzjshm.jvm.java.classfile.ClassReader;
+import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
 
 /**
  * The attribute that stores line numbers.
@@ -17,7 +17,7 @@ public class LineNumberTableAttribute implements AttrbuteInfos.AttributeInfo {
     public LineNumberTableEntry[] lineNumberTable;
 
     @Override
-    public void readInfo(ClassReader reader) {
+    public void readInfo(ByteArrayReader reader) {
         int lineNumberTableLength = reader.readUint16();
         lineNumberTable = new LineNumberTableEntry[lineNumberTableLength];
         for (int i = 0; i < lineNumberTableLength; i++) {

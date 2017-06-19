@@ -1,6 +1,6 @@
 package io.github.fxzjshm.jvm.java.classfile.attrinfo;
 
-import io.github.fxzjshm.jvm.java.classfile.ClassReader;
+import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
 
 /**
  * An attribute that stores exceptions.
@@ -12,7 +12,7 @@ public class ExceptionsAttribute implements AttrbuteInfos.AttributeInfo {
     public int[] exceptionIndexTable;
 
     @Override
-    public void readInfo(ClassReader reader) {
+    public void readInfo(ByteArrayReader reader) {
         exceptionIndexTable = reader.readUint16s();
     }
 

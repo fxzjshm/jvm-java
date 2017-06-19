@@ -1,6 +1,6 @@
 package io.github.fxzjshm.jvm.java.classfile.attrinfo;
 
-import io.github.fxzjshm.jvm.java.classfile.ClassReader;
+import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
 import io.github.fxzjshm.jvm.java.classfile.ConstantPool.ConstantInfo;
 import io.github.fxzjshm.jvm.java.classfile.attrinfo.MarkerAttribute.DeprecatedAttribute;
 import io.github.fxzjshm.jvm.java.classfile.attrinfo.MarkerAttribute.SyntheticAttribute;
@@ -14,10 +14,10 @@ public abstract class AttrbuteInfos {
      */
     public interface AttributeInfo {
 
-        public void readInfo(ClassReader reader);
+        public void readInfo(ByteArrayReader reader);
     }
 
-    public static AttributeInfo[] attributeInfos(ClassReader reader, ConstantInfo[] cp) {
+    public static AttributeInfo[] attributeInfos(ByteArrayReader reader, ConstantInfo[] cp) {
         int count = reader.readUint16();
         AttributeInfo[] attrs = new AttributeInfo[count];
         for (int i = 0; i < count; i++) {

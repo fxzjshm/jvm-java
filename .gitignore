@@ -15,3 +15,6 @@ gradle-app.setting
 /jvm-java/.nb-gradle/
 /.nb-gradle/
 /nbproject/
+/.idea/
+src/test/resources/*.class
+/local.properties

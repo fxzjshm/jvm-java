@@ -1,6 +1,6 @@
 package io.github.fxzjshm.jvm.java.classfile.attrinfo;
 
-import io.github.fxzjshm.jvm.java.classfile.ClassReader;
+import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
 
 /**
  * Stores local variables.
@@ -17,7 +17,7 @@ public class LocalVariableTableAttribute implements AttrbuteInfos.AttributeInfo 
     public LocalVariableTableEntry[] localVariableTable;
 
     @Override
-    public void readInfo(ClassReader reader) {
+    public void readInfo(ByteArrayReader reader) {
         int localVariableTableLength = reader.readUint16();
         localVariableTable = new LocalVariableTableEntry[localVariableTableLength];
         for (int i = 0; i < localVariableTableLength; i++) {

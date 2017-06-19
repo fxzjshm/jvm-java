@@ -1,6 +1,6 @@
 package io.github.fxzjshm.jvm.java.classfile.attrinfo;
 
-import io.github.fxzjshm.jvm.java.classfile.ClassReader;
+import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
 
 /**
  * An unknown attribute.
@@ -14,7 +14,7 @@ public class UnparsedAttribute implements AttrbuteInfos.AttributeInfo {
     public byte[] info;
 
     @Override
-    public void readInfo(ClassReader reader) {
+    public void readInfo(ByteArrayReader reader) {
         info = reader.readBytes(length);
     }
 

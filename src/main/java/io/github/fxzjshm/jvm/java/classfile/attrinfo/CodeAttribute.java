@@ -1,6 +1,6 @@
 package io.github.fxzjshm.jvm.java.classfile.attrinfo;
 
-import io.github.fxzjshm.jvm.java.classfile.ClassReader;
+import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
 import io.github.fxzjshm.jvm.java.classfile.ConstantPool.ConstantInfo;
 import io.github.fxzjshm.jvm.java.classfile.attrinfo.AttrbuteInfos.AttributeInfo;
 
@@ -24,7 +24,7 @@ public class CodeAttribute implements AttributeInfo {
     }
 
     @Override
-    public void readInfo(ClassReader reader) {
+    public void readInfo(ByteArrayReader reader) {
         maxStack = reader.readUint16();
         maxLocals = reader.readUint16();
         int codeLength = reader.readInt32();
@@ -33,7 +33,7 @@ public class CodeAttribute implements AttributeInfo {
         attributes = AttrbuteInfos.attributeInfos(reader, cp);
     }
 
-    public ExceptionTableEntry[] readExceptionTable(ClassReader reader) {
+    public ExceptionTableEntry[] readExceptionTable(ByteArrayReader reader) {
         int exceptionTableLength = reader.readUint16();
         exceptionTable = new ExceptionTableEntry[exceptionTableLength];
         for (int i = 0; i < exceptionTableLength; i++) {
