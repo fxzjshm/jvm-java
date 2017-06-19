@@ -8,7 +8,7 @@ import java.io.*;
  *
  * @author fxzjshm
  */
-public class ConstantPool {
+public abstract class ConstantPool {
 
     public static class ConstantInfo {
 
@@ -29,64 +29,77 @@ public class ConstantPool {
         public int tag;
         public Object info;
     }
-    
-    public static class ConstantMemberrefInfo{
-    protected int /* constant pool index */ classIndex,nameAndTypeIndex;
-}
 
-    public ConstantInfo[] cp;
+    public static class ConstantComplexInfo {
 
-    public ConstantPool(ClassReader reader) throws IOException {
-        int cpCount = reader.readUint16();
-        cp = new ConstantInfo[cpCount];
-        for (int i = 1; i < cpCount; i++) {
-            ConstantInfo ci=new ConstantInfo();
-            ci.tag=reader.readUint8();
-            switch(ci.tag){
-                	case CONSTANT_Integer:
-		ci.info=reader.readInt32();
-                break;
-	case CONSTANT_Float:
-		ci.info=Float.intBitsToFloat(reader.readInt32());
-                break;
-	case CONSTANT_Long:
-		ci.info=reader.readInt64();
-                break;
-	case CONSTANT_Double:
-		ci.info=Double.longBitsToDouble(reader.readInt64());
-                break;
-	case CONSTANT_Utf8:
-            int length=reader.readUint16();
-            byte[] bytes=reader.readBytes(length);
-		ci.info=new DataInputStream(new ByteArrayInputStream(bytes)).readUTF();
-                break;
-	case CONSTANT_String:
-	case CONSTANT_Class:
-		ci.info/*constant pool index*/=reader.readUint16();
-                break;
-	case CONSTANT_Fieldref:
-	case CONSTANT_Methodref:
-        case CONSTANT_InterfaceMethodref:
-		ConstantMemberrefInfo mInfo=new ConstantMemberrefInfo();
-                mInfo.classIndex=reader.readUint16();
-                mInfo.nameAndTypeIndex=reader.readUint16();
-                ci.info=mInfo;
-                break;
-	case CONSTANT_NameAndType:
-		return &ConstantNameAndTypeInfo{}
-                break;
-	case CONSTANT_MethodType:
-		return &ConstantMethodTypeInfo{}
-                break;
-	case CONSTANT_MethodHandle:
-		return &ConstantMethodHandleInfo{}
-                break;
-	case CONSTANT_InvokeDynamic:
-		return &ConstantInvokeDynamicInfo{}
-                break;
-	default:
-		throw new ClassFormatError("constant pool tag!");
-	}
-            }
-        }
+        protected int /* constant pool index */ classIndex, nameIndex, nameAndTypeIndex, descriptorIndex, referenceKind, refernceIndex, bootstrapMethodAttrIndex;
     }
+
+    public static ConstantInfo[] constantPool(ClassReader reader) throws IOException {
+        int cpCount = reader.readUint16();
+        ConstantInfo[] cp = new ConstantInfo[cpCount];
+        for (int i = 1; i < cpCount; i++) {
+            ConstantInfo ci = new ConstantInfo();
+            ci.tag = reader.readUint8();
+            ConstantComplexInfo cinfo = new ConstantComplexInfo();
+            switch (ci.tag) {
+                case CONSTANT_Integer:
+                    ci.info = reader.readInt32();
+                    break;
+                case CONSTANT_Float:
+                    ci.info = Float.intBitsToFloat(reader.readInt32());
+                    break;
+                case CONSTANT_Long:
+                    ci.info = reader.readInt64();
+                    i++;
+                    break;
+                case CONSTANT_Double:
+                    ci.info = Double.longBitsToDouble(reader.readInt64());
+                    i++;
+                    break;
+                case CONSTANT_Utf8:
+                    int length = reader.readUint16();
+                    byte[] bytes = reader.readBytes(length);
+                    ci.info = new DataInputStream(new ByteArrayInputStream(bytes)).readUTF();
+                    break;
+                case CONSTANT_String:
+                case CONSTANT_Class:
+                    ci.info/*constant pool index*/ = reader.readUint16();
+                    break;
+                case CONSTANT_Fieldref:
+                case CONSTANT_Methodref:
+                case CONSTANT_InterfaceMethodref:
+                    cinfo.classIndex = reader.readUint16();
+                    cinfo.nameAndTypeIndex = reader.readUint16();
+                    ci.info = cinfo;
+                    break;
+                case CONSTANT_NameAndType:
+                    cinfo.nameIndex = reader.readUint16();
+                    cinfo.descriptorIndex = reader.readUint16();
+                    ci.info = cinfo;
+                    break;
+                case CONSTANT_MethodType:
+                    cinfo.descriptorIndex = reader.readUint16();
+                    ci.info = cinfo;
+                    break;
+                case CONSTANT_MethodHandle:
+                    cinfo.referenceKind = reader.readUint8();
+                    cinfo.refernceIndex = reader.readUint16();
+                    ci.info = cinfo;
+                    break;
+                case CONSTANT_InvokeDynamic:
+                    cinfo.bootstrapMethodAttrIndex = reader.readUint16();
+                    cinfo.nameAndTypeIndex = reader.readUint16();
+                    ci.info = cinfo;
+                    break;
+                default:
+                    throw new ClassFormatError("constant pool tag!");
+            }
+            if (ci.info == null) {
+                ci.info = cinfo;
+            }
+            cp[i] = ci;
+        }
+        return cp;
+    }
+}

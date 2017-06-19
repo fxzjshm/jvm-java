@@ -1,5 +1,8 @@
 package io.github.fxzjshm.jvm.java.classfile;
 
+import io.github.fxzjshm.jvm.java.classfile.ConstantPool.ConstantInfo;
+import io.github.fxzjshm.jvm.java.classfile.attrinfo.AttrbuteInfos;
+import io.github.fxzjshm.jvm.java.classfile.attrinfo.AttrbuteInfos.AttributeInfo;
 import java.io.IOException;
 
 /**
@@ -14,18 +17,29 @@ public class ClassFile {
      */
     public static final int MAGIC = 0xcafebabe;
     /**
+     * Class reader for this class file.
+     */
+    public ClassReader reader;
+    /**
      * Versions.
      */
     public int major, minor;
-    public ConstantPool cp;
+    public ConstantInfo[] cp;
     /**
      * Access flags.
      */
     public int accessFlags;
-    protected int /*Constant pool index*/ thisClass, superClass, interfaces[];
-    public MemberInfo[] members;
+    /**
+     * Constant pool index.
+     */
+    protected int thisClass, superClass, interfaces[];
+    public MemberInfo[] fields, methods;
+    public AttributeInfo[] attributes;
 
+    @SuppressWarnings("OverridableMethodCallInConstructor")
     public ClassFile(ClassReader reader) throws IOException {
+        this.reader = reader;
+
         // Magic number
         if (reader.readInt32() != MAGIC) {
             throw new ClassFormatError("Magic number is wrong!");
@@ -34,10 +48,10 @@ public class ClassFile {
         // Minor and major
         minor = reader.readUint16();
         major = reader.readUint16();
-        checkVersion(major, minor);
+        checkVersion();
 
         // Constant pool
-        cp = new ConstantPool(reader);
+        cp = ConstantPool.constantPool(reader);
 
         // Access flags
         accessFlags = reader.readUint16();
@@ -48,17 +62,14 @@ public class ClassFile {
         interfaces = reader.readUint16s();
 
         // Read members
-        int memberCount = reader.readUint16();
-        members = new MemberInfo[memberCount];
-        for (int i = 0; i < memberCount; i++) {
-            MemberInfo member = new MemberInfo();
+        fields = loadMembers();
+        methods = loadMembers();
 
-            members[i] = member;
-
-        }
+        //Attrbute info
+        attributes = AttrbuteInfos.attributeInfos(reader, cp);
     }
 
-    public static void checkVersion(int major, int minor) {
+    public void checkVersion() {
         if (major == 45) {
             return;
         }
@@ -68,5 +79,20 @@ public class ClassFile {
             }
         }
         throw new UnsupportedClassVersionError();
+    }
+
+    public MemberInfo[] loadMembers() {
+        int memberCount = reader.readUint16();
+        MemberInfo[] members = new MemberInfo[memberCount];
+        for (int i = 0; i < memberCount; i++) {
+            MemberInfo member = new MemberInfo();
+            member.cp = cp;
+            member.accessFlags = reader.readUint16();
+            member.nameIndex = reader.readUint16();
+            member.descriptorIndex = reader.readUint16();
+            member.attributes = AttrbuteInfos.attributeInfos(reader, cp);
+            members[i] = member;
+        }
+        return members;
     }
 }

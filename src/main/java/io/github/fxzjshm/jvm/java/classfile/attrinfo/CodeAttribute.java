@@ -1,0 +1,49 @@
+package io.github.fxzjshm.jvm.java.classfile.attrinfo;
+
+import io.github.fxzjshm.jvm.java.classfile.ClassReader;
+import io.github.fxzjshm.jvm.java.classfile.ConstantPool.ConstantInfo;
+import io.github.fxzjshm.jvm.java.classfile.attrinfo.AttrbuteInfos.AttributeInfo;
+
+/**
+ * Stores code for methods.
+ *
+ * @author fxzjshm
+ */
+public class CodeAttribute implements AttributeInfo {
+
+    ConstantInfo[] cp;
+    int maxStack;
+    int maxLocals;
+    byte[] code;
+    ExceptionTableEntry[] exceptionTable;
+    AttributeInfo[] attributes;
+
+    public static class ExceptionTableEntry {
+
+        int startPc, endPc, handlerPc, catchType;
+    }
+
+    @Override
+    public void readInfo(ClassReader reader) {
+        maxStack = reader.readUint16();
+        maxLocals = reader.readUint16();
+        int codeLength = reader.readInt32();
+        code = reader.readBytes(codeLength);
+        exceptionTable = readExceptionTable(reader);
+        attributes = AttrbuteInfos.attributeInfos(reader, cp);
+    }
+
+    public ExceptionTableEntry[] readExceptionTable(ClassReader reader) {
+        int exceptionTableLength = reader.readUint16();
+        exceptionTable = new ExceptionTableEntry[exceptionTableLength];
+        for (int i = 0; i < exceptionTableLength; i++) {
+            ExceptionTableEntry e = new ExceptionTableEntry();
+            e.startPc = reader.readUint16();
+            e.endPc = reader.readUint16();
+            e.handlerPc = reader.readUint16();
+            e.catchType = reader.readUint16();
+            exceptionTable[i] = e;
+        }
+        return exceptionTable;
+    }
+}
