@@ -1,26 +1,49 @@
-apply plugin: 'java'
-apply plugin: 'jacoco'
-
-sourceCompatibility = '1.7'
-[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-
-// NetBeans will automatically add "run" and "debug" tasks relying on the
-// "mainClass" property. You may however define the property prior executing
-// tasks by passing a "-PmainClass=<QUALIFIED_CLASS_NAME>" argument.
-//
-// Note however, that you may define your own "run" and "debug" task if you
-// prefer. In this case NetBeans will not add these tasks but you may rely on
-// your own implementation.
-if (!hasProperty('mainClass')) {
-    ext.mainClass = 'io.github.fxzjshm.jvm.java.Main'
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        jcenter()
+    }
+    dependencies {
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
+        classpath "com.jtransc:jtransc-gradle-plugin:0.6.4"
+    }
 }
 
-repositories {
-    mavenCentral()
+allprojects{
+    repositories {
+        mavenCentral()
+    }
 }
 
-dependencies {
-    testCompile 'junit:junit:4.10'
-    testCompile 'org.eclipse.jdt.core.compiler:ecj:4.6.1'
-    testCompile 'org.eclipse.jdt.core.compiler:ecj:4.6.1:sources'
+project(":core"){
+    apply plugin: 'java'
+    apply plugin: 'jacoco'
+    dependencies {
+        testCompile 'junit:junit:4.10'
+        testCompile 'org.eclipse.jdt.core.compiler:ecj:4.6.1'
+        testCompile 'org.eclipse.jdt.core.compiler:ecj:4.6.1:sources'
+    }
+}
+
+project(":test-gwt"){
+    apply plugin: 'java'
+    apply plugin: 'gwt'
+    apply plugin: 'war'
+    dependencies {
+        compile project(":core")
+        compile 'com.google.gwt:gwt-user:2.8.0'
+        compile 'com.google.gwt:gwt-dev:2.8.0'
+    }
+}
+
+project(":test-jtransc"){
+    apply plugin: 'java'
+    apply plugin: 'jtransc'
+    project.ext.mainClassName = "io.github.fxzjshm.jvm.java.Main"
+    dependencies {
+        compile project(":core")
+    }
 }
