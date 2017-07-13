@@ -20,7 +20,7 @@ import java.util.Set;
  */
 public class ClassFileTest {
 
-    static File dir = new File("src/test/resources");
+    static File dir = new File("core/src/test/resources");
 
     public static Set<File> searchFile(FilenameFilter filter, File dir) {
         Set<File> set = new HashSet<>();
