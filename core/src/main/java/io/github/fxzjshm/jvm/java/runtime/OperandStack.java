@@ -18,4 +18,12 @@ public class OperandStack<E> extends Stack<E> {
             super.pop();
         return super.pop();
     }
+    
+    public synchronized E popRaw(){
+        return super.pop();
+    }
+    
+    public synchronized E pushRaw(E item){
+        return super.push(item);
+    }
 }

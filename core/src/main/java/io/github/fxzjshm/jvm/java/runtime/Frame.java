@@ -177,65 +177,65 @@ public class Frame {
 //TODO impl
                 break;
             case 0x57: // pop
-                operandStack.pop();
+                operandStack.popRaw();
                 break;
             case 0x58: // pop2
-                operandStack.pop();
-                operandStack.pop();
+                operandStack.popRaw();
+                operandStack.popRaw();
                 break;
             case 0x59: // dup
                 operandStack.push(operandStack.peek());
                 break;
             case 0x5a: // dup_x1
-                Object v1 = operandStack.pop(), v2 = operandStack.pop();
-                operandStack.push(v1);
-                operandStack.push(v2);
-                operandStack.push(v1);
+                Object v1 = operandStack.popRaw(), v2 = operandStack.popRaw();
+                operandStack.pushRaw(v1);
+                operandStack.pushRaw(v2);
+                operandStack.pushRaw(v1);
                 break;
             case 0x5b: // dup_x2
-                v1 = operandStack.pop();
-                v2 = operandStack.pop();
-                Object v3 = operandStack.pop();
-                operandStack.push(v1);
-                operandStack.push(v3);
-                operandStack.push(v2);
-                operandStack.push(v1);
+                v1 = operandStack.popRaw();
+                v2 = operandStack.popRaw();
+                Object v3 = operandStack.popRaw();
+                operandStack.pushRaw(v1);
+                operandStack.pushRaw(v3);
+                operandStack.pushRaw(v2);
+                operandStack.pushRaw(v1);
                 break;
             case 0x5c: // dup2
-                v1 = operandStack.pop();
-                v2 = operandStack.pop();
-                operandStack.push(v2);
-                operandStack.push(v1);
-                operandStack.push(v2);
-                operandStack.push(v1);
+                v1 = operandStack.popRaw();
+                v2 = operandStack.popRaw();
+                operandStack.pushRaw(v2);
+                operandStack.pushRaw(v1);
+                operandStack.pushRaw(v2);
+                operandStack.pushRaw(v1);
                 break;
             case 0x5d: // dup2_x1
-                v1 = operandStack.pop();
-                v2 = operandStack.pop();
-                v3 = operandStack.pop();
-                operandStack.push(v2);
-                operandStack.push(v1);
-                operandStack.push(v3);
-                operandStack.push(v2);
-                operandStack.push(v1);
+                v1 = operandStack.popRaw();
+                v2 = operandStack.popRaw();
+                v3 = operandStack.popRaw();
+                operandStack.pushRaw(v2);
+                operandStack.pushRaw(v1);
+                operandStack.pushRaw(v3);
+                operandStack.pushRaw(v2);
+                operandStack.pushRaw(v1);
                 break;
             case 0x5e: // dup2_x2
-                v1 = operandStack.pop();
-                v2 = operandStack.pop();
-                v3 = operandStack.pop();
-                Object v4 = operandStack.pop();
-                operandStack.push(v2);
-                operandStack.push(v1);
-                operandStack.push(v4);
-                operandStack.push(v3);
-                operandStack.push(v2);
-                operandStack.push(v1);
+                v1 = operandStack.popRaw();
+                v2 = operandStack.popRaw();
+                v3 = operandStack.popRaw();
+                Object v4 = operandStack.popRaw();
+                operandStack.pushRaw(v2);
+                operandStack.pushRaw(v1);
+                operandStack.pushRaw(v4);
+                operandStack.pushRaw(v3);
+                operandStack.pushRaw(v2);
+                operandStack.pushRaw(v1);
                 break;
             case 0x5f: // swap
-                v1 = operandStack.pop();
-                v2 = operandStack.pop();
-                operandStack.push(v1);
-                operandStack.push(v2);
+                v1 = operandStack.popRaw();
+                v2 = operandStack.popRaw();
+                operandStack.pushRaw(v1);
+                operandStack.pushRaw(v2);
                 break;
             case 0x60: // iadd
                 Integer i1 = (Integer) operandStack.pop();
@@ -725,6 +725,8 @@ public class Frame {
             case 0xff:
 //TODO impl
                 break;
+            default:
+                throw new IllegalArgumentException(String.format("Unknown byte code %x", code));
         }
     }
 
