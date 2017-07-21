@@ -6,6 +6,7 @@ import java.util.List;
 import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
 
 public class Frame {
+    public Method method;
     public List<Object> localVars = new LinkedList<>();
     public OperandStack<Object> operandStack = new OperandStack<>();
 
@@ -257,41 +258,65 @@ public class Frame {
                 Double d2 = (Double) operandStack.pop();
                 operandStack.push(d1 + d2);
                 break;
-            case 0x64:
-//TODO impl
+            case 0x64: // isub
+                i1 = (Integer) operandStack.pop();
+                i2 = (Integer) operandStack.pop();
+                operandStack.push(i2 - i1);
                 break;
-            case 0x65:
-//TODO impl
+            case 0x65: // lsub
+                l1 = (Long) operandStack.pop();
+                l2 = (Long) operandStack.pop();
+                operandStack.push(l2 - l1);
                 break;
-            case 0x66:
-//TODO impl
+            case 0x66: // fsub
+                f1 = (Float) operandStack.pop();
+                f2 = (Float) operandStack.pop();
+                operandStack.push(f2 - f1);
                 break;
-            case 0x67:
-//TODO impl
+            case 0x67: // dsub
+                d1 = (Double) operandStack.pop();
+                d2 = (Double) operandStack.pop();
+                operandStack.push(d2 - d1);
                 break;
-            case 0x68:
-//TODO impl
+            case 0x68: // imul
+                i1 = (Integer) operandStack.pop();
+                i2 = (Integer) operandStack.pop();
+                operandStack.push(i1 * i2);
                 break;
-            case 0x69:
-//TODO impl
+            case 0x69: // lmul
+                l1 = (Long) operandStack.pop();
+                l2 = (Long) operandStack.pop();
+                operandStack.push(l1 * l2);
                 break;
-            case 0x6a:
-//TODO impl
+            case 0x6a: // fmul
+                f1 = (Float) operandStack.pop();
+                f2 = (Float) operandStack.pop();
+                operandStack.push(f1 * f2);
                 break;
-            case 0x6b:
-//TODO impl
+            case 0x6b: // dmul
+                d1 = (Double) operandStack.pop();
+                d2 = (Double) operandStack.pop();
+                operandStack.push(d1 * d2);
                 break;
-            case 0x6c:
-//TODO impl
+            case 0x6c: // idiv
+                i1 = (Integer) operandStack.pop();
+                i2 = (Integer) operandStack.pop();
+                operandStack.push(i2 / i1);
                 break;
-            case 0x6d:
-//TODO impl
+            case 0x6d: // ldiv
+                l1 = (Long) operandStack.pop();
+                l2 = (Long) operandStack.pop();
+                operandStack.push(l2 / l1);
                 break;
-            case 0x6e:
-//TODO impl
+            case 0x6e: // fdiv
+                f1 = (Float) operandStack.pop();
+                f2 = (Float) operandStack.pop();
+                operandStack.push(f2 / f1);
                 break;
-            case 0x6f:
-//TODO impl
+            case 0x6f: // ddiv
+                d1 = (Double) operandStack.pop();
+                d2 = (Double) operandStack.pop();
+                operandStack.push(d2 - d1);
                 break;
             case 0x70:
 //TODO impl

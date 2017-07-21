@@ -30,6 +30,8 @@ public abstract class ConstantPool {
         public Object info;
     }
 
+    /** Contains some complex costant info. Some of the fields may be null, according to {@link ConstantInfo#tag}.
+     * */
     public static class ConstantComplexInfo {
 
         protected int /* constant pool index */ classIndex, nameIndex, nameAndTypeIndex, descriptorIndex, referenceKind, refernceIndex, bootstrapMethodAttrIndex;
@@ -58,8 +60,6 @@ public abstract class ConstantPool {
                     i++;
                     break;
                 case CONSTANT_Utf8:
-                    // int length = reader.readUint16();
-                    // byte[] bytes = reader.readBytes(length);
                     ci.info = new DataInputStream(reader).readUTF();
                     break;
                 case CONSTANT_String:
@@ -93,7 +93,7 @@ public abstract class ConstantPool {
                     ci.info = cinfo;
                     break;
                 default:
-                    throw new ClassFormatError("constant pool tag!");
+                    throw new ClassFormatError("Unknown constant pool tag:" + ci.tag);
             }
             cp[i] = ci;
         }
