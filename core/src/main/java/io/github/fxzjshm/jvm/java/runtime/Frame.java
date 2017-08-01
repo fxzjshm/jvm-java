@@ -1,18 +1,22 @@
 package io.github.fxzjshm.jvm.java.runtime;
 
 import java.util.LinkedList;
-import java.util.List;
+import java.util.Map;
 
 import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
+import java.util.*;
 
-public class Frame {
+public class Frame
+{
     public Method method;
-    public List<Object> localVars = new LinkedList<>();
+    public Map<Integer,Object> localVars = new LinkedHashMap<>();
     public OperandStack<Object> operandStack = new OperandStack<>();
 
-    public void exec(ByteArrayReader reader) {
+    public void exec(ByteArrayReader reader)
+    {
         int code = (byte) reader.read();
-        switch (code) {
+        switch (code)
+        {
             case 0x0: // nop
                 break;
             case 0x1: // aconst_null
@@ -121,37 +125,37 @@ public class Frame {
             case 0x38: // fstore
             case 0x39: // dstore
             case 0x3a: // astore
-                localVars.set(reader.readUint8(), operandStack.pop());
+                localVars.put(reader.readUint8(), operandStack.pop());
                 break;
             case 0x3b:
             case 0x3c:
             case 0x3d:
             case 0x3e: // istore_<n>
-                localVars.set(code - 0x3b, operandStack.pop());
+                localVars.put(code - 0x3b, operandStack.pop());
                 break;
             case 0x3f:
             case 0x40:
             case 0x41:
             case 0x42: // lstore_<n>
-                localVars.set(code - 0x3f, operandStack.pop());
+                localVars.put(code - 0x3f, operandStack.pop());
                 break;
             case 0x43:
             case 0x44:
             case 0x45:
             case 0x46: // fstore_<n>
-                localVars.set(code - 0x43, operandStack.pop());
+                localVars.put(code - 0x43, operandStack.pop());
                 break;
             case 0x47:
             case 0x48:
             case 0x49:
             case 0x4a: // dstore_<n>
-                localVars.set(code - 0x47, operandStack.pop());
+                localVars.put(code - 0x47, operandStack.pop());
                 break;
             case 0x4b:
             case 0x4c:
             case 0x4d:
             case 0x4e: // astore_<n>
-                localVars.set(code - 0x4b, operandStack.pop());
+                localVars.put(code - 0x4b, operandStack.pop());
                 break;
             case 0x4f:
 //TODO impl
@@ -318,151 +322,163 @@ public class Frame {
                 d2 = (Double) operandStack.pop();
                 operandStack.push(d2 - d1);
                 break;
-            case 0x70:
+            case 0x70: // irem
+                i1 = (Integer) operandStack.pop();
+                i2 = (Integer) operandStack.pop();
+                operandStack.push(i2 % i1);
+                break;
+            case 0x71: // lrem
+                l1 = (Long) operandStack.pop();
+                l2 = (Long) operandStack.pop();
+                operandStack.push(l2 % l1);
+                break;
+            case 0x72: // frem
+                f1 = (Float) operandStack.pop();
+                f2 = (Float) operandStack.pop();
+                operandStack.push(f2 % f1);
+                break;
+            case 0x73: // drem
+                d1 = (Double) operandStack.pop();
+                d2 = (Double) operandStack.pop();
+                operandStack.push(d2 - d1);
+                break;
+            case 0x74: // ineg
+                i1 = (Integer) operandStack.pop();
+                operandStack.push(-i1);
+                break;
+            case 0x75: // lneg
+                l1 = (Long) operandStack.pop();
+                operandStack.push(-l1);
+                break;
+            case 0x76: // fneg
+                f1 = (Float) operandStack.pop();
+                operandStack.push(-f1);
+                break;
+            case 0x77: // dneg
+                d1 = (Double) operandStack.pop();
+                operandStack.push(-d1);
+                break;
+            case 0x78: // ishl
 //TODO impl
                 break;
-            case 0x71:
+            case 0x79: // lshl
 //TODO impl
                 break;
-            case 0x72:
+            case 0x7a: // ishr
 //TODO impl
                 break;
-            case 0x73:
+            case 0x7b: // lusr
 //TODO impl
                 break;
-            case 0x74:
+            case 0x7c: // iushr
 //TODO impl
                 break;
-            case 0x75:
+            case 0x7d: // lushr
 //TODO impl
                 break;
-            case 0x76:
+            case 0x7e: // iand
 //TODO impl
                 break;
-            case 0x77:
+            case 0x7f: // land
 //TODO impl
                 break;
-            case 0x78:
+            case 0x80: // ior
 //TODO impl
                 break;
-            case 0x79:
+            case 0x81: // lor
 //TODO impl
                 break;
-            case 0x7a:
+            case 0x82: // ixor
 //TODO impl
                 break;
-            case 0x7b:
+            case 0x83: // lxor
 //TODO impl
                 break;
-            case 0x7c:
+            case 0x84: // iinc
 //TODO impl
                 break;
-            case 0x7d:
+            case 0x85: // i2l
 //TODO impl
                 break;
-            case 0x7e:
+            case 0x86: // i2f
 //TODO impl
                 break;
-            case 0x7f:
+            case 0x87: // i2d
 //TODO impl
                 break;
-            case 0x80:
+            case 0x88: // l2i
 //TODO impl
                 break;
-            case 0x81:
+            case 0x89: // l2f
 //TODO impl
                 break;
-            case 0x82:
+            case 0x8a: // l2d
 //TODO impl
                 break;
-            case 0x83:
+            case 0x8b: // f2i
 //TODO impl
                 break;
-            case 0x84:
+            case 0x8c: // f2l
 //TODO impl
                 break;
-            case 0x85:
+            case 0x8d: // f2d
 //TODO impl
                 break;
-            case 0x86:
+            case 0x8e: // d2i
 //TODO impl
                 break;
-            case 0x87:
+            case 0x8f: // d2l
 //TODO impl
                 break;
-            case 0x88:
+            case 0x90: // d2f
 //TODO impl
                 break;
-            case 0x89:
+            case 0x91: // i2b
 //TODO impl
                 break;
-            case 0x8a:
+            case 0x92: // i2c
 //TODO impl
                 break;
-            case 0x8b:
+            case 0x93: // i2s
 //TODO impl
                 break;
-            case 0x8c:
+            case 0x94: // lcmp
 //TODO impl
                 break;
-            case 0x8d:
+            case 0x95: // fcmpl
 //TODO impl
                 break;
-            case 0x8e:
+            case 0x96: // fcmpg
 //TODO impl
                 break;
-            case 0x8f:
+            case 0x97: // dcmpl
 //TODO impl
                 break;
-            case 0x90:
+            case 0x98: // dcmpg
 //TODO impl
                 break;
-            case 0x91:
+            case 0x99: // ifeq
 //TODO impl
                 break;
-            case 0x92:
+            case 0x9a: // ifne
 //TODO impl
                 break;
-            case 0x93:
+            case 0x9b: // iflt
 //TODO impl
                 break;
-            case 0x94:
+            case 0x9c: // ifge
 //TODO impl
                 break;
-            case 0x95:
+            case 0x9d: // ifgt
 //TODO impl
                 break;
-            case 0x96:
+            case 0x9e: // ifle
 //TODO impl
                 break;
-            case 0x97:
+            case 0x9f: // if_icmpeq
 //TODO impl
                 break;
-            case 0x98:
-//TODO impl
-                break;
-            case 0x99:
-//TODO impl
-                break;
-            case 0x9a:
-//TODO impl
-                break;
-            case 0x9b:
-//TODO impl
-                break;
-            case 0x9c:
-//TODO impl
-                break;
-            case 0x9d:
-//TODO impl
-                break;
-            case 0x9e:
-//TODO impl
-                break;
-            case 0x9f:
-//TODO impl
-                break;
-            case 0xa0:
+            case 0xa0: // if_icmpne
 //TODO impl
                 break;
             case 0xa1:
