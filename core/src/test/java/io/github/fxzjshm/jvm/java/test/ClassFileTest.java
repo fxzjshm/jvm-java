@@ -1,4 +1,4 @@
-package io.github.fxzjshm.jvm.java.classfile;
+package io.github.fxzjshm.jvm.java.test;
 
 import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
 import org.junit.Before;
@@ -12,6 +12,9 @@ import java.nio.file.Files;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
+import io.github.fxzjshm.jvm.java.classfile.ClassFile;
 
 /**
  * Test parsing class file.

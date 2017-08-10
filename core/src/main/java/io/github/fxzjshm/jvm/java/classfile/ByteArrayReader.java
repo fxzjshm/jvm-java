@@ -8,19 +8,27 @@ public class ByteArrayReader extends ByteArrayInputStream {
         super(buf);
     }
 
-    public int readUint8() {
+    public synchronized int readInt8() {
+        return (pos < count) ? buf[pos++] : -1;
+    }
+
+    public synchronized int readUint8() {
         return read();
     }
 
-    public int readUint16() {
-        return read() << 8 | read();
+    public synchronized int readInt16() {
+        return (short)(readUint8() << 8 | readUint8());
     }
 
-    public int[] readUint16s() {
+    public synchronized int readUint16() {
+        return readUint8() << 8 | readUint8();
+    }
+
+    public synchronized int[] readUint16s() {
         return readUint16s(readUint16()); // Next u2 is the length
     }
 
-    public int[] readUint16s(int n) {
+    public synchronized int[] readUint16s(int n) {
         int[] ints = new int[n];
         for (int i = 0; i < n; i++) {
             ints[i] = readUint16();
@@ -28,18 +36,20 @@ public class ByteArrayReader extends ByteArrayInputStream {
         return ints;
     }
 
-    public int readInt32() {
+    public synchronized int readInt32() {
         return readUint16() << 16 | readUint16();
     }
 
-    public long readInt64() {
+    public synchronized long readInt64() {
         return (((long) readInt32()) << 32) | readInt32();
     }
 
-    public byte[] readBytes(int n) {
+    public synchronized byte[] readBytes(int n) {
         byte[] bytes = new byte[n];
         System.arraycopy(this.buf, pos, bytes, 0, n);
-        this.skip(n);
+        long m = this.skip(n);
+        if (m != n)
+            throw new IllegalArgumentException("Not enough bytes! Expected:" + n + ", Actual: " + m);
         return bytes;
     }
 }

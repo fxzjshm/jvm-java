@@ -1,22 +1,17 @@
 package io.github.fxzjshm.jvm.java.runtime;
 
-import java.util.LinkedList;
-import java.util.Map;
-
 import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
 import java.util.*;
 
-public class Frame
-{
+public class Frame {
     public Method method;
-    public Map<Integer,Object> localVars = new LinkedHashMap<>();
+    public Map<Integer, Object> localVars = new LinkedHashMap<>();
     public OperandStack<Object> operandStack = new OperandStack<>();
 
-    public void exec(ByteArrayReader reader)
-    {
-        int code = (byte) reader.read();
-        switch (code)
-        {
+    public void exec(byte[] bytes) {
+        ByteArrayReader reader = new ByteArrayReader(bytes);
+        int code = (byte) reader.read(), ret = 0;
+        switch (code) {
             case 0x0: // nop
                 break;
             case 0x1: // aconst_null
@@ -45,10 +40,10 @@ public class Frame
                 operandStack.push((double) (code - 0x0e));
                 break;
             case 0x10: // bipush
-                operandStack.push(reader.readUint8());
+                operandStack.push(reader.readInt8());
                 break;
             case 0x11: // sipush
-                operandStack.push(reader.readUint16());
+                operandStack.push(reader.readInt16());
                 break;
             case 0x12: // ldc
 //TODO impl
@@ -359,103 +354,144 @@ public class Frame
                 operandStack.push(-d1);
                 break;
             case 0x78: // ishl
-//TODO impl
+                i1 = (Integer) operandStack.pop();
+                i2 = (Integer) operandStack.pop();
+                operandStack.push(i2 << (i1 & 0x1f));
                 break;
             case 0x79: // lshl
-//TODO impl
+                i1 = (Integer) operandStack.pop();
+                l2 = (Long) operandStack.pop();
+                operandStack.push(l2 << (i1 & 0x3f));
                 break;
             case 0x7a: // ishr
-//TODO impl
+                i1 = (Integer) operandStack.pop();
+                i2 = (Integer) operandStack.pop();
+                operandStack.push(i2 >> (i1 & 0x1f));
                 break;
             case 0x7b: // lusr
-//TODO impl
+                i1 = (Integer) operandStack.pop();
+                l2 = (Long) operandStack.pop();
+                operandStack.push(l2 >> (i1 & 0x3f));
                 break;
             case 0x7c: // iushr
-//TODO impl
+                i1 = (Integer) operandStack.pop();
+                i2 = (Integer) operandStack.pop();
+                operandStack.push(i2 >>> (i1 & 0x1f));
                 break;
             case 0x7d: // lushr
-//TODO impl
+                i1 = (Integer) operandStack.pop();
+                l2 = (Long) operandStack.pop();
+                operandStack.push(l2 >>> (i1 & 0x3f));
                 break;
             case 0x7e: // iand
-//TODO impl
+                i1 = (Integer) operandStack.pop();
+                i2 = (Integer) operandStack.pop();
+                operandStack.push(i1 & i2);
                 break;
             case 0x7f: // land
-//TODO impl
+                l1 = (Long) operandStack.pop();
+                l2 = (Long) operandStack.pop();
+                operandStack.push(l1 & l2);
                 break;
             case 0x80: // ior
-//TODO impl
+                i1 = (Integer) operandStack.pop();
+                i2 = (Integer) operandStack.pop();
+                operandStack.push(i1 | i2);
                 break;
             case 0x81: // lor
-//TODO impl
+                l1 = (Long) operandStack.pop();
+                l2 = (Long) operandStack.pop();
+                operandStack.push(l1 | l2);
                 break;
             case 0x82: // ixor
-//TODO impl
+                i1 = (Integer) operandStack.pop();
+                i2 = (Integer) operandStack.pop();
+                operandStack.push(i1 ^ i2);
                 break;
             case 0x83: // lxor
-//TODO impl
+                l1 = (Long) operandStack.pop();
+                l2 = (Long) operandStack.pop();
+                operandStack.push(l1 ^ l2);
                 break;
             case 0x84: // iinc
-//TODO impl
+                int index = reader.readUint8(), cst = reader.readInt8();
+                localVars.put(index, (int) localVars.get(index) + cst);
                 break;
             case 0x85: // i2l
-//TODO impl
+                operandStack.push((long) ((int) operandStack.pop()));
                 break;
             case 0x86: // i2f
-//TODO impl
+                operandStack.push((float) ((int) operandStack.pop()));
                 break;
             case 0x87: // i2d
-//TODO impl
+                operandStack.push((double) ((int) operandStack.pop()));
                 break;
             case 0x88: // l2i
-//TODO impl
+                operandStack.push((int) ((long) operandStack.pop()));
                 break;
             case 0x89: // l2f
-//TODO impl
+                operandStack.push((float) ((long) operandStack.pop()));
                 break;
             case 0x8a: // l2d
-//TODO impl
+                operandStack.push((double) ((long) operandStack.pop()));
                 break;
             case 0x8b: // f2i
-//TODO impl
+                operandStack.push((int) ((float) operandStack.pop()));
                 break;
             case 0x8c: // f2l
-//TODO impl
+                operandStack.push((long) ((float) operandStack.pop()));
                 break;
             case 0x8d: // f2d
-//TODO impl
+                operandStack.push((double) ((float) operandStack.pop()));
                 break;
             case 0x8e: // d2i
-//TODO impl
+                operandStack.push((int) ((double) operandStack.pop()));
                 break;
             case 0x8f: // d2l
-//TODO impl
+                operandStack.push((long) ((double) operandStack.pop()));
                 break;
             case 0x90: // d2f
-//TODO impl
+                operandStack.push((float) ((double) operandStack.pop()));
                 break;
             case 0x91: // i2b
-//TODO impl
+                operandStack.push((byte) ((int) operandStack.pop()));
                 break;
             case 0x92: // i2c
-//TODO impl
+                operandStack.push((char) ((int) operandStack.pop()));
                 break;
             case 0x93: // i2s
-//TODO impl
+                operandStack.push((short) ((int) operandStack.pop()));
                 break;
             case 0x94: // lcmp
-//TODO impl
+                l1 = (Long) operandStack.pop();
+                l2 = (Long) operandStack.pop();
+                if (l1 < l2) operandStack.push(1);
+                else if (l1 > l2) operandStack.push(-1);
+                else operandStack.push(0);
                 break;
             case 0x95: // fcmpl
-//TODO impl
-                break;
+                ret = -1;
             case 0x96: // fcmpg
-//TODO impl
+                if (ret == 0) ret = 1;
+                f1 = (Float) operandStack.pop();
+                f2 = (Float) operandStack.pop();
+                if (f1.equals(Float.NaN)) operandStack.push(ret);
+                else if (f2.equals(Float.NaN)) operandStack.push(ret);
+                else if (f1 < f2) operandStack.push(1);
+                else if (f1 > f2) operandStack.push(-1);
+                else if (f1.equals(f2)) operandStack.push(0);
                 break;
             case 0x97: // dcmpl
-//TODO impl
-                break;
+                ret = -1;
             case 0x98: // dcmpg
-//TODO impl
+                if (ret == 0) ret = 1;
+                d1 = (Double) operandStack.pop();
+                d2 = (Double) operandStack.pop();
+                if (d1.equals(Double.NaN)) operandStack.push(ret);
+                else if (d2.equals(Double.NaN)) operandStack.push(ret);
+                else if (d1 < d2) operandStack.push(1);
+                else if (d1 > d2) operandStack.push(-1);
+                else if (d1.equals(d2)) operandStack.push(0);
                 break;
             case 0x99: // ifeq
 //TODO impl
@@ -607,169 +643,8 @@ public class Frame
             case 0xca:
 //TODO impl
                 break;
-            case 0xcb:
-//TODO impl
-                break;
-            case 0xcc:
-//TODO impl
-                break;
-            case 0xcd:
-//TODO impl
-                break;
-            case 0xce:
-//TODO impl
-                break;
-            case 0xcf:
-//TODO impl
-                break;
-            case 0xd0:
-//TODO impl
-                break;
-            case 0xd1:
-//TODO impl
-                break;
-            case 0xd2:
-//TODO impl
-                break;
-            case 0xd3:
-//TODO impl
-                break;
-            case 0xd4:
-//TODO impl
-                break;
-            case 0xd5:
-//TODO impl
-                break;
-            case 0xd6:
-//TODO impl
-                break;
-            case 0xd7:
-//TODO impl
-                break;
-            case 0xd8:
-//TODO impl
-                break;
-            case 0xd9:
-//TODO impl
-                break;
-            case 0xda:
-//TODO impl
-                break;
-            case 0xdb:
-//TODO impl
-                break;
-            case 0xdc:
-//TODO impl
-                break;
-            case 0xdd:
-//TODO impl
-                break;
-            case 0xde:
-//TODO impl
-                break;
-            case 0xdf:
-//TODO impl
-                break;
-            case 0xe0:
-//TODO impl
-                break;
-            case 0xe1:
-//TODO impl
-                break;
-            case 0xe2:
-//TODO impl
-                break;
-            case 0xe3:
-//TODO impl
-                break;
-            case 0xe4:
-//TODO impl
-                break;
-            case 0xe5:
-//TODO impl
-                break;
-            case 0xe6:
-//TODO impl
-                break;
-            case 0xe7:
-//TODO impl
-                break;
-            case 0xe8:
-//TODO impl
-                break;
-            case 0xe9:
-//TODO impl
-                break;
-            case 0xea:
-//TODO impl
-                break;
-            case 0xeb:
-//TODO impl
-                break;
-            case 0xec:
-//TODO impl
-                break;
-            case 0xed:
-//TODO impl
-                break;
-            case 0xee:
-//TODO impl
-                break;
-            case 0xef:
-//TODO impl
-                break;
-            case 0xf0:
-//TODO impl
-                break;
-            case 0xf1:
-//TODO impl
-                break;
-            case 0xf2:
-//TODO impl
-                break;
-            case 0xf3:
-//TODO impl
-                break;
-            case 0xf4:
-//TODO impl
-                break;
-            case 0xf5:
-//TODO impl
-                break;
-            case 0xf6:
-//TODO impl
-                break;
-            case 0xf7:
-//TODO impl
-                break;
-            case 0xf8:
-//TODO impl
-                break;
-            case 0xf9:
-//TODO impl
-                break;
-            case 0xfa:
-//TODO impl
-                break;
-            case 0xfb:
-//TODO impl
-                break;
-            case 0xfc:
-//TODO impl
-                break;
-            case 0xfd:
-//TODO impl
-                break;
-            case 0xfe:
-//TODO impl
-                break;
-            case 0xff:
-//TODO impl
-                break;
             default:
                 throw new IllegalArgumentException(String.format("Unknown byte code %x", code));
         }
     }
-
-
 }
