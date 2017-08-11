@@ -7,7 +7,7 @@ import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
  *
  * @author fxzjshm
  */
-public class LocalVariableTableAttribute implements AttrbuteInfos.AttributeInfo {
+public class LocalVariableTableAttribute implements AttributeInfos.AttributeInfo {
 
     public static class LocalVariableTableEntry {
 

@@ -7,7 +7,7 @@ import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
  *
  * @author fxzjshm
  */
-public class ConstantValueAttribute implements AttrbuteInfos.AttributeInfo {
+public class ConstantValueAttribute implements AttributeInfos.AttributeInfo {
 
     public int constantValueIndex;
 

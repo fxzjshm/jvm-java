@@ -2,7 +2,7 @@ package io.github.fxzjshm.jvm.java.classfile.attrinfo;
 
 import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
 import io.github.fxzjshm.jvm.java.classfile.ConstantPool.ConstantInfo;
-import io.github.fxzjshm.jvm.java.classfile.attrinfo.AttrbuteInfos.AttributeInfo;
+import io.github.fxzjshm.jvm.java.classfile.attrinfo.AttributeInfos.AttributeInfo;
 
 /**
  * Stores code for methods.
@@ -11,15 +11,14 @@ import io.github.fxzjshm.jvm.java.classfile.attrinfo.AttrbuteInfos.AttributeInfo
  */
 public class CodeAttribute implements AttributeInfo {
 
-    ConstantInfo[] cp;
-    int maxStack;
-    int maxLocals;
-    byte[] code;
-    ExceptionTableEntry[] exceptionTable;
-    AttributeInfo[] attributes;
+    public ConstantInfo[] cp;
+    public int maxStack;
+    public int maxLocals;
+    public byte[] code;
+    public  ExceptionTableEntry[] exceptionTable;
+    public AttributeInfo[] attributes;
 
     public static class ExceptionTableEntry {
-
         int startPc, endPc, handlerPc, catchType;
     }
 
@@ -30,7 +29,7 @@ public class CodeAttribute implements AttributeInfo {
         int codeLength = reader.readInt32();
         code = reader.readBytes(codeLength);
         exceptionTable = readExceptionTable(reader);
-        attributes = AttrbuteInfos.attributeInfos(reader, cp);
+        attributes = AttributeInfos.attributeInfos(reader, cp);
     }
 
     public ExceptionTableEntry[] readExceptionTable(ByteArrayReader reader) {

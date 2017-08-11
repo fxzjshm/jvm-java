@@ -1,7 +1,7 @@
 package io.github.fxzjshm.jvm.java.classfile.attrinfo;
 
 import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
-import io.github.fxzjshm.jvm.java.classfile.attrinfo.AttrbuteInfos.AttributeInfo;
+import io.github.fxzjshm.jvm.java.classfile.attrinfo.AttributeInfos.AttributeInfo;
 
 /**
  * "@Deprecated" and "@Synthetic"

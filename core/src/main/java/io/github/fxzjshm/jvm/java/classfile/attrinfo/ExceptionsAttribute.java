@@ -7,7 +7,7 @@ import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
  *
  * @author fxzjshm
  */
-public class ExceptionsAttribute implements AttrbuteInfos.AttributeInfo {
+public class ExceptionsAttribute implements AttributeInfos.AttributeInfo {
 
     public int[] exceptionIndexTable;
 

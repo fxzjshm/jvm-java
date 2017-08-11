@@ -8,6 +8,12 @@ public class ByteArrayReader extends ByteArrayInputStream {
         super(buf);
     }
 
+    @Override
+    public synchronized int read() {
+        if (pos >= count) throw new RuntimeException("Not enough bytes!");
+        return super.read();
+    }
+
     public synchronized int readInt8() {
         return (pos < count) ? buf[pos++] : -1;
     }
@@ -17,7 +23,7 @@ public class ByteArrayReader extends ByteArrayInputStream {
     }
 
     public synchronized int readInt16() {
-        return (short)(readUint8() << 8 | readUint8());
+        return (short) (readUint8() << 8 | readUint8());
     }
 
     public synchronized int readUint16() {
@@ -40,6 +46,12 @@ public class ByteArrayReader extends ByteArrayInputStream {
         return readUint16() << 16 | readUint16();
     }
 
+    public synchronized int[] readInt32s(int n) {
+        int[] ints = new int[n];
+        for (int i = 0; i < n; i++) ints[i] = readInt32();
+        return ints;
+    }
+
     public synchronized long readInt64() {
         return (((long) readInt32()) << 32) | readInt32();
     }
@@ -51,5 +63,17 @@ public class ByteArrayReader extends ByteArrayInputStream {
         if (m != n)
             throw new IllegalArgumentException("Not enough bytes! Expected:" + n + ", Actual: " + m);
         return bytes;
+    }
+
+    public synchronized void skipPadding() {
+        while (pos % 4 != 0) pos++;
+    }
+
+    public int getPos() {
+        return pos;
+    }
+
+    public synchronized void setPos(int pos) {
+        this.pos = pos;
     }
 }

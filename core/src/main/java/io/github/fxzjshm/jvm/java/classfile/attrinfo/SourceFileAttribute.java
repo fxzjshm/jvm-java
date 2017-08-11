@@ -8,7 +8,7 @@ import io.github.fxzjshm.jvm.java.classfile.ConstantPool.ConstantInfo;
  *
  * @author fxzjshm
  */
-public class SourceFileAttribute implements AttrbuteInfos.AttributeInfo {
+public class SourceFileAttribute implements AttributeInfos.AttributeInfo {
 
     public ConstantInfo[] cp;
     public int sourceFileIndex;

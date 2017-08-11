@@ -7,7 +7,7 @@ import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
  *
  * @author fxzjshm
  */
-public class UnparsedAttribute implements AttrbuteInfos.AttributeInfo {
+public class UnparsedAttribute implements AttributeInfos.AttributeInfo {
 
     public String name;
     public int length;

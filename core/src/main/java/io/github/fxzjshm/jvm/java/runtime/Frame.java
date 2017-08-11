@@ -1,15 +1,37 @@
 package io.github.fxzjshm.jvm.java.runtime;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+
 import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
-import java.util.*;
+import io.github.fxzjshm.jvm.java.classfile.ConstantPool;
 
 public class Frame {
-    public Method method;
     public Map<Integer, Object> localVars = new LinkedHashMap<>();
     public OperandStack<Object> operandStack = new OperandStack<>();
+    public int nextPC;
+    /**
+     * Refers to the thread that contains this frame.
+     */
+    public Thread thread;
+    public Method method;
 
-    public void exec(byte[] bytes) {
-        ByteArrayReader reader = new ByteArrayReader(bytes);
+    public Frame(Thread thread) {
+        this.thread = thread;
+    }
+
+    public void branch(int offset) {
+        nextPC = method.reader.getPos() + offset;
+    }
+
+    /**
+     * Do one step of bytecode.
+     */
+    public void exec() {
+        ByteArrayReader reader = method.reader;
+        reader.setPos(nextPC);
+        nextPC++;
         int code = (byte) reader.read(), ret = 0;
         switch (code) {
             case 0x0: // nop
@@ -47,12 +69,25 @@ public class Frame {
                 break;
             case 0x12: // ldc
 //TODO impl
-                break;
-            case 0x13:
+                int index = reader.readUint8();
+            case 0x13: // ldc_w
+            case 0x14: // ldc2_w
 //TODO impl
-                break;
-            case 0x14:
-//TODO impl
+                index = reader.readUint16();
+                ConstantPool.ConstantInfo c = method.classFile.cp[index];
+                switch (c.tag) {
+                    case ConstantPool.ConstantInfo.CONSTANT_Integer:
+                    case ConstantPool.ConstantInfo.CONSTANT_Float:
+                    case ConstantPool.ConstantInfo.CONSTANT_Long:
+                    case ConstantPool.ConstantInfo.CONSTANT_Double:
+                        operandStack.push(c.info);
+                        break;
+                    case ConstantPool.ConstantInfo.CONSTANT_String: // TODO
+                    case ConstantPool.ConstantInfo.CONSTANT_MethodHandle: // TODO:
+                    case ConstantPool.ConstantInfo.CONSTANT_MethodType: // TODO
+                    default:
+                        throw new UnsupportedOperationException("TODO: ldc");
+                }
                 break;
             case 0x15: // iload
             case 0x16: // lload
@@ -91,28 +126,28 @@ public class Frame {
             case 0x2d: // aload_<n>
                 operandStack.push(localVars.get(code - 0x2a));
                 break;
-            case 0x2e:
+            case 0x2e: // iaload
 //TODO impl
                 break;
-            case 0x2f:
+            case 0x2f: // laload
 //TODO impl
                 break;
-            case 0x30:
+            case 0x30: // faload
 //TODO impl
                 break;
-            case 0x31:
+            case 0x31: // daload
 //TODO impl
                 break;
-            case 0x32:
+            case 0x32: // aaload
 //TODO impl
                 break;
-            case 0x33:
+            case 0x33: // baload
 //TODO impl
                 break;
-            case 0x34:
+            case 0x34: // caload
 //TODO impl
                 break;
-            case 0x35:
+            case 0x35: // saload
 //TODO impl
                 break;
             case 0x36: // istore
@@ -414,7 +449,8 @@ public class Frame {
                 operandStack.push(l1 ^ l2);
                 break;
             case 0x84: // iinc
-                int index = reader.readUint8(), cst = reader.readInt8();
+                index = reader.readUint8();
+                int cst = reader.readInt8();
                 localVars.put(index, (int) localVars.get(index) + cst);
                 break;
             case 0x85: // i2l
@@ -494,157 +530,218 @@ public class Frame {
                 else if (d1.equals(d2)) operandStack.push(0);
                 break;
             case 0x99: // ifeq
-//TODO impl
+                int address = reader.readInt16();
+                if (((Integer) operandStack.pop()) == 0) branch(address);
                 break;
             case 0x9a: // ifne
-//TODO impl
+                address = reader.readInt16();
+                if (((Integer) operandStack.pop()) != 0) branch(address);
                 break;
             case 0x9b: // iflt
-//TODO impl
+                address = reader.readInt16();
+                if (((Integer) operandStack.pop()) < 0) branch(address);
                 break;
             case 0x9c: // ifge
-//TODO impl
+                address = reader.readInt16();
+                if (((Integer) operandStack.pop()) >= 0) branch(address);
                 break;
             case 0x9d: // ifgt
-//TODO impl
+                address = reader.readInt16();
+                if (((Integer) operandStack.pop()) > 0) branch(address);
                 break;
             case 0x9e: // ifle
-//TODO impl
+                address = reader.readInt16();
+                if (((Integer) operandStack.pop()) <= 0) branch(address);
                 break;
             case 0x9f: // if_icmpeq
-//TODO impl
+                i2 = (Integer) operandStack.pop();
+                i1 = (Integer) operandStack.pop();
+                address = reader.readInt16();
+                if (Objects.equals(i1, i2)) branch(address);
                 break;
             case 0xa0: // if_icmpne
+                i2 = (Integer) operandStack.pop();
+                i1 = (Integer) operandStack.pop();
+                address = reader.readInt16();
+                if (!Objects.equals(i1, i2)) branch(address);
+                break;
+            case 0xa1:// if_icmplt
+                i2 = (Integer) operandStack.pop();
+                i1 = (Integer) operandStack.pop();
+                address = reader.readInt16();
+                if (i1 < i2) branch(address);
+                break;
+            case 0xa2:// if_icmpge
+                i2 = (Integer) operandStack.pop();
+                i1 = (Integer) operandStack.pop();
+                address = reader.readInt16();
+                if (i1 >= i2) branch(address);
+                break;
+            case 0xa3:// if_icmpgt
+                i2 = (Integer) operandStack.pop();
+                i1 = (Integer) operandStack.pop();
+                address = reader.readInt16();
+                if (i1 > i2) branch(address);
+                break;
+            case 0xa4:// if_icmple
+                i2 = (Integer) operandStack.pop();
+                i1 = (Integer) operandStack.pop();
+                address = reader.readInt16();
+                if (i1 <= i2) branch(address);
+                break;
+            case 0xa5:// if_acmpeq
+                Object o2 = operandStack.pop();
+                Object o1 = operandStack.pop();
+                address = reader.readInt16();
+                if (o1 == o2) branch(address);
+                break;
+            case 0xa6:// if_acmpne
+                o2 = operandStack.pop();
+                o1 = operandStack.pop();
+                address = reader.readInt16();
+                if (o1 != o2) branch(address);
+                break;
+            case 0xa7:// goto
+                address = reader.readInt16();
+                branch(address);
+                break;
+            case 0xa8:// jsr
+                if (method.info.classFile.major <= 49) {
+                    address = reader.readInt16();
+                    branch(address);
+                    operandStack.push(reader.getPos() + 3);
+                } else
+                    throw new RuntimeException("JSR is just like tan(PI/2) when class file version is"
+                            + method.info.classFile.major + "." + method.info.classFile.minor);
+                break;
+            case 0xa9:// ret
+                if (method.info.classFile.major <= 49) {
+                    branch((Integer) localVars.get(reader.readUint8()));
+                } else
+                    throw new RuntimeException("RET is just like tan(PI/2) when class file version is"
+                            + method.info.classFile.major + "." + method.info.classFile.minor);
+                break;
+            case 0xaa:// tableswitch
+                reader.skipPadding();
+                int defaultOffset = reader.readInt32(),
+                        min = reader.readInt32(),
+                        offset,
+                        max = reader.readInt32(),
+                        jumpOffsetsCount = max - min + 1;
+                int[] jumpOffsets = reader.readInt32s(jumpOffsetsCount);
+                index = (Integer) operandStack.pop();
+                if (min <= index && index <= max) offset = jumpOffsets[index - min];
+                else offset = defaultOffset;
+                branch(offset);
+                break;
+            case 0xab:// lookupswitch
+                int key = (Integer) operandStack.pop();
+                reader.skipPadding();
+                defaultOffset = reader.readInt32();
+                int npairs = reader.readInt32();
+                int[] data = reader.readInt32s(npairs * 2);
+                for (int i = 0; i < npairs * 2; i += 2)
+                    if (data[i] == key) {
+                        branch(data[i + 1]);
+                        break;
+                    }
+                branch(defaultOffset);
+                break;
+            case 0xac:// ireturn
 //TODO impl
                 break;
-            case 0xa1:
+            case 0xad:// lreturn
 //TODO impl
                 break;
-            case 0xa2:
+            case 0xae:// freturn
 //TODO impl
                 break;
-            case 0xa3:
+            case 0xaf:// dreturn
 //TODO impl
                 break;
-            case 0xa4:
+            case 0xb0:// areturn
 //TODO impl
                 break;
-            case 0xa5:
+            case 0xb1:// return
 //TODO impl
                 break;
-            case 0xa6:
+            case 0xb2:// getstatic
 //TODO impl
                 break;
-            case 0xa7:
+            case 0xb3:// putstatic
 //TODO impl
                 break;
-            case 0xa8:
+            case 0xb4:// getfield
 //TODO impl
                 break;
-            case 0xa9:
+            case 0xb5:// putfield
 //TODO impl
                 break;
-            case 0xaa:
+            case 0xb6:// invokevirtual
 //TODO impl
                 break;
-            case 0xab:
+            case 0xb7:// invokespecial
 //TODO impl
                 break;
-            case 0xac:
+            case 0xb8:// invokestatic
 //TODO impl
                 break;
-            case 0xad:
+            case 0xb9:// invokeinterface
 //TODO impl
                 break;
-            case 0xae:
+            case 0xba:// invokedynamic
 //TODO impl
                 break;
-            case 0xaf:
+            case 0xbb:// new
 //TODO impl
                 break;
-            case 0xb0:
+            case 0xbc:// newarray
 //TODO impl
                 break;
-            case 0xb1:
+            case 0xbd:// anewarray
 //TODO impl
                 break;
-            case 0xb2:
+            case 0xbe:// arraylength
 //TODO impl
                 break;
-            case 0xb3:
+            case 0xbf:// athrow
 //TODO impl
                 break;
-            case 0xb4:
+            case 0xc0:// checkcast
 //TODO impl
                 break;
-            case 0xb5:
+            case 0xc1:// instanceof
 //TODO impl
                 break;
-            case 0xb6:
+            case 0xc2:// monitorenter
 //TODO impl
                 break;
-            case 0xb7:
+            case 0xc3:// monitorexit
 //TODO impl
                 break;
-            case 0xb8:
+            case 0xc4:// wide
 //TODO impl
                 break;
-            case 0xb9:
+            case 0xc5:// multianewarray
 //TODO impl
                 break;
-            case 0xba:
+            case 0xc6:// ifnull
 //TODO impl
                 break;
-            case 0xbb:
+            case 0xc7:// ifnonnull
 //TODO impl
                 break;
-            case 0xbc:
+            case 0xc8:// goto_w
 //TODO impl
                 break;
-            case 0xbd:
+            case 0xc9:// jsr_w
 //TODO impl
                 break;
-            case 0xbe:
-//TODO impl
-                break;
-            case 0xbf:
-//TODO impl
-                break;
-            case 0xc0:
-//TODO impl
-                break;
-            case 0xc1:
-//TODO impl
-                break;
-            case 0xc2:
-//TODO impl
-                break;
-            case 0xc3:
-//TODO impl
-                break;
-            case 0xc4:
-//TODO impl
-                break;
-            case 0xc5:
-//TODO impl
-                break;
-            case 0xc6:
-//TODO impl
-                break;
-            case 0xc7:
-//TODO impl
-                break;
-            case 0xc8:
-//TODO impl
-                break;
-            case 0xc9:
-//TODO impl
-                break;
-            case 0xca:
+            case 0xca:// breakpoint
 //TODO impl
                 break;
             default:
-                throw new IllegalArgumentException(String.format("Unknown byte code %x", code));
+                throw new IllegalArgumentException(String.format("Unknown bytecode %x", code));
         }
     }
 }

@@ -5,7 +5,7 @@ import io.github.fxzjshm.jvm.java.classfile.ConstantPool.ConstantInfo;
 import io.github.fxzjshm.jvm.java.classfile.attrinfo.MarkerAttribute.DeprecatedAttribute;
 import io.github.fxzjshm.jvm.java.classfile.attrinfo.MarkerAttribute.SyntheticAttribute;
 
-public abstract class AttrbuteInfos {
+public abstract class AttributeInfos {
 
     /**
      * Stores information of attribute.
@@ -13,8 +13,7 @@ public abstract class AttrbuteInfos {
      * @author fxzjshm
      */
     public interface AttributeInfo {
-
-        public void readInfo(ByteArrayReader reader);
+        void readInfo(ByteArrayReader reader);
     }
 
     public static AttributeInfo[] attributeInfos(ByteArrayReader reader, ConstantInfo[] cp) {

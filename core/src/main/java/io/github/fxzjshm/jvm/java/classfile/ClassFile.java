@@ -1,9 +1,10 @@
 package io.github.fxzjshm.jvm.java.classfile;
 
-import io.github.fxzjshm.jvm.java.classfile.ConstantPool.ConstantInfo;
-import io.github.fxzjshm.jvm.java.classfile.attrinfo.AttrbuteInfos;
-import io.github.fxzjshm.jvm.java.classfile.attrinfo.AttrbuteInfos.AttributeInfo;
 import java.io.IOException;
+
+import io.github.fxzjshm.jvm.java.classfile.ConstantPool.ConstantInfo;
+import io.github.fxzjshm.jvm.java.classfile.attrinfo.AttributeInfos;
+import io.github.fxzjshm.jvm.java.classfile.attrinfo.AttributeInfos.AttributeInfo;
 
 /**
  * Stores .class file information.
@@ -29,12 +30,12 @@ public class ClassFile {
      * Access flags.
      */
     public int accessFlags;
+    public MemberInfo[] fields, methods;
+    public AttributeInfo[] attributes;
     /**
      * Constant pool index.
      */
     protected int thisClass, superClass, interfaces[];
-    public MemberInfo[] fields, methods;
-    public AttributeInfo[] attributes;
 
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public ClassFile(ByteArrayReader reader) throws IOException {
@@ -65,8 +66,8 @@ public class ClassFile {
         fields = loadMembers();
         methods = loadMembers();
 
-        //Attrbute info
-        attributes = AttrbuteInfos.attributeInfos(reader, cp);
+        // Attribute info
+        attributes = AttributeInfos.attributeInfos(reader, cp);
     }
 
     public void checkVersion() {
@@ -90,7 +91,8 @@ public class ClassFile {
             member.accessFlags = reader.readUint16();
             member.nameIndex = reader.readUint16();
             member.descriptorIndex = reader.readUint16();
-            member.attributes = AttrbuteInfos.attributeInfos(reader, cp);
+            member.attributes = AttributeInfos.attributeInfos(reader, cp);
+            member.classFile = this;
             members[i] = member;
         }
         return members;

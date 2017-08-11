@@ -1,7 +1,7 @@
 package io.github.fxzjshm.jvm.java.classfile;
 
 import io.github.fxzjshm.jvm.java.classfile.ConstantPool.ConstantInfo;
-import io.github.fxzjshm.jvm.java.classfile.attrinfo.AttrbuteInfos.AttributeInfo;
+import io.github.fxzjshm.jvm.java.classfile.attrinfo.AttributeInfos.AttributeInfo;
 
 public class MemberInfo {
 
@@ -9,4 +9,5 @@ public class MemberInfo {
     public int accessFlags;
     protected int /* Constant pool index*/ nameIndex, descriptorIndex;
     public AttributeInfo[] attributes;
+    public ClassFile classFile;
 }

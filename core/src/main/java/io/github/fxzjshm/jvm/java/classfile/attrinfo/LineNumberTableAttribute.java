@@ -7,7 +7,7 @@ import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
  *
  * @author fxzjshm
  */
-public class LineNumberTableAttribute implements AttrbuteInfos.AttributeInfo {
+public class LineNumberTableAttribute implements AttributeInfos.AttributeInfo {
 
     public static class LineNumberTableEntry {
 
