@@ -2,7 +2,6 @@ package io.github.fxzjshm.jvm.java.classfile;
 
 import java.io.IOException;
 
-import io.github.fxzjshm.jvm.java.classfile.ConstantPool.ConstantInfo;
 import io.github.fxzjshm.jvm.java.classfile.attrinfo.AttributeInfos;
 import io.github.fxzjshm.jvm.java.classfile.attrinfo.AttributeInfos.AttributeInfo;
 
@@ -25,7 +24,7 @@ public class ClassFile {
      * Versions.
      */
     public int major, minor;
-    public ConstantInfo[] cp;
+    public ConstantPool cp;
     /**
      * Access flags.
      */
@@ -35,7 +34,8 @@ public class ClassFile {
     /**
      * Constant pool index.
      */
-    protected int thisClass, superClass, interfaces[];
+    public int thisClass, superClass, interfaces[];
+    public String name, superClassName, interfaceNames[];
 
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public ClassFile(ByteArrayReader reader) throws IOException {
@@ -52,7 +52,7 @@ public class ClassFile {
         checkVersion();
 
         // Constant pool
-        cp = ConstantPool.constantPool(reader);
+        cp = new ConstantPool(reader);
 
         // Access flags
         accessFlags = reader.readUint16();
@@ -62,12 +62,26 @@ public class ClassFile {
         superClass = reader.readUint16();
         interfaces = reader.readUint16s();
 
+        // Names
+        int nameIndex = (int) cp.infos[thisClass].info;
+        name = (String) cp.infos[nameIndex].info;
+
         // Read members
         fields = loadMembers();
         methods = loadMembers();
 
         // Attribute info
         attributes = AttributeInfos.attributeInfos(reader, cp);
+
+        int superClassNameIndex = (int) cp.infos[superClass].info;
+        superClassName = (String) cp.infos[superClassNameIndex].info;
+
+        interfaceNames = new String[interfaces.length];
+        for (int i = 0; i < interfaceNames.length; i++) {
+            int interfaceClass = interfaces[i];
+            int interfaceClassNameIndex = (int) cp.infos[interfaceClass].info;
+            interfaceNames[i] = (String) cp.infos[interfaceClassNameIndex].info;
+        }
     }
 
     public void checkVersion() {
@@ -86,13 +100,20 @@ public class ClassFile {
         int memberCount = reader.readUint16();
         MemberInfo[] members = new MemberInfo[memberCount];
         for (int i = 0; i < memberCount; i++) {
-            MemberInfo member = new MemberInfo();
-            member.cp = cp;
+            MemberInfo member = new MemberInfo(
+                    /*cp = */cp,
+                    /*accessFlags = */reader.readUint16(),
+                    /*nameIndex = */reader.readUint16(),
+                    /*descriptorIndex = */reader.readUint16(),
+                    /*attributes = */AttributeInfos.attributeInfos(reader, cp),
+                    /*classFile = */this
+            );
+            /*member.cp = cp;
             member.accessFlags = reader.readUint16();
             member.nameIndex = reader.readUint16();
             member.descriptorIndex = reader.readUint16();
             member.attributes = AttributeInfos.attributeInfos(reader, cp);
-            member.classFile = this;
+            member.classFile = this;*/
             members[i] = member;
         }
         return members;

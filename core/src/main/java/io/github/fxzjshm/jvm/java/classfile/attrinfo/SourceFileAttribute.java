@@ -1,7 +1,7 @@
 package io.github.fxzjshm.jvm.java.classfile.attrinfo;
 
 import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
-import io.github.fxzjshm.jvm.java.classfile.ConstantPool.ConstantInfo;
+import io.github.fxzjshm.jvm.java.classfile.ConstantPool;
 
 /**
  * The attribute that contain source file name.
@@ -10,7 +10,7 @@ import io.github.fxzjshm.jvm.java.classfile.ConstantPool.ConstantInfo;
  */
 public class SourceFileAttribute implements AttributeInfos.AttributeInfo {
 
-    public ConstantInfo[] cp;
+    public ConstantPool cp;
     public int sourceFileIndex;
 
     @Override

@@ -1,7 +1,7 @@
 package io.github.fxzjshm.jvm.java.classfile.attrinfo;
 
 import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
-import io.github.fxzjshm.jvm.java.classfile.ConstantPool.ConstantInfo;
+import io.github.fxzjshm.jvm.java.classfile.ConstantPool;
 import io.github.fxzjshm.jvm.java.classfile.attrinfo.AttributeInfos.AttributeInfo;
 
 /**
@@ -11,7 +11,7 @@ import io.github.fxzjshm.jvm.java.classfile.attrinfo.AttributeInfos.AttributeInf
  */
 public class CodeAttribute implements AttributeInfo {
 
-    public ConstantInfo[] cp;
+    public ConstantPool cp;
     public int maxStack;
     public int maxLocals;
     public byte[] code;

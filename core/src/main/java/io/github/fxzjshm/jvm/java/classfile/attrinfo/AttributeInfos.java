@@ -1,28 +1,19 @@
 package io.github.fxzjshm.jvm.java.classfile.attrinfo;
 
 import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
-import io.github.fxzjshm.jvm.java.classfile.ConstantPool.ConstantInfo;
+import io.github.fxzjshm.jvm.java.classfile.ConstantPool;
 import io.github.fxzjshm.jvm.java.classfile.attrinfo.MarkerAttribute.DeprecatedAttribute;
 import io.github.fxzjshm.jvm.java.classfile.attrinfo.MarkerAttribute.SyntheticAttribute;
 
 public abstract class AttributeInfos {
 
-    /**
-     * Stores information of attribute.
-     *
-     * @author fxzjshm
-     */
-    public interface AttributeInfo {
-        void readInfo(ByteArrayReader reader);
-    }
-
-    public static AttributeInfo[] attributeInfos(ByteArrayReader reader, ConstantInfo[] cp) {
+    public static AttributeInfo[] attributeInfos(ByteArrayReader reader, ConstantPool cp) {
         int count = reader.readUint16();
         AttributeInfo[] attrs = new AttributeInfo[count];
         for (int i = 0; i < count; i++) {
 
             int attrNameIndex = reader.readUint16();
-            String attrName = (String) cp[attrNameIndex].info;
+            String attrName = (String) cp.infos[attrNameIndex].info;
             int attrLen = reader.readInt32();
             AttributeInfo attr = newAttributeInfo(attrName, attrLen, cp);
             attr.readInfo(reader);
@@ -32,7 +23,7 @@ public abstract class AttributeInfos {
     }
 
     @SuppressWarnings("deprecation")
-    public static AttributeInfo newAttributeInfo(String attrName, int attrLen, ConstantInfo[] cp) {
+    public static AttributeInfo newAttributeInfo(String attrName, int attrLen, ConstantPool cp) {
         switch (attrName) {
             case "Code":
                 CodeAttribute ca = new CodeAttribute();
@@ -60,5 +51,14 @@ public abstract class AttributeInfos {
                 ua.length = attrLen;
                 return ua;
         }
+    }
+
+    /**
+     * Stores information of attribute.
+     *
+     * @author fxzjshm
+     */
+    public interface AttributeInfo {
+        void readInfo(ByteArrayReader reader);
     }
 }

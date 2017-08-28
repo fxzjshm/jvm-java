@@ -13,17 +13,18 @@ public class OperandStack<E> extends Stack<E> {
 
     @Override
     public synchronized E pop() {
+        if (size() < 2) return super.pop();
         E item = elementAt(size() - 2);
         if (item instanceof Long || item instanceof Double)
             super.pop();
         return super.pop();
     }
-    
-    public synchronized E popRaw(){
+
+    public synchronized E popRaw() {
         return super.pop();
     }
-    
-    public synchronized E pushRaw(E item){
+
+    public synchronized E pushRaw(E item) {
         return super.push(item);
     }
 }

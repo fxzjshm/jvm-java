@@ -16,23 +16,24 @@ public class Frame {
      */
     public Thread thread;
     public Method method;
+    public ByteArrayReader reader;
 
-    public Frame(Thread thread) {
+    public Frame(Thread thread, Method method) {
         this.thread = thread;
+        this.method = method;
+        reader = new ByteArrayReader(method.code);
     }
 
     public void branch(int offset) {
-        nextPC = method.reader.getPos() + offset;
+        nextPC = reader.getPos() + offset - 2 * reader.sizeAfterLastReset;
     }
 
     /**
      * Do one step of bytecode.
      */
-    public void exec() {
-        ByteArrayReader reader = method.reader;
+    public void exec() throws Throwable {
         reader.setPos(nextPC);
-        nextPC++;
-        int code = (byte) reader.read(), ret = 0;
+        int code = reader.readUint8(), ret = 0;
         switch (code) {
             case 0x0: // nop
                 break;
@@ -68,13 +69,11 @@ public class Frame {
                 operandStack.push(reader.readInt16());
                 break;
             case 0x12: // ldc
-//TODO impl
-                int index = reader.readUint8();
             case 0x13: // ldc_w
             case 0x14: // ldc2_w
 //TODO impl
-                index = reader.readUint16();
-                ConstantPool.ConstantInfo c = method.classFile.cp[index];
+                int index = (code == 0x12) ? reader.readUint8() : reader.readUint16();
+                ConstantPool.ConstantInfo c = method.clazz.classFile.cp.infos[index];
                 switch (c.tag) {
                     case ConstantPool.ConstantInfo.CONSTANT_Integer:
                     case ConstantPool.ConstantInfo.CONSTANT_Float:
@@ -187,28 +186,28 @@ public class Frame {
             case 0x4e: // astore_<n>
                 localVars.put(code - 0x4b, operandStack.pop());
                 break;
-            case 0x4f:
+            case 0x4f: // iastore
 //TODO impl
                 break;
-            case 0x50:
+            case 0x50: // lastore
 //TODO impl
                 break;
-            case 0x51:
+            case 0x51: // fastore
 //TODO impl
                 break;
-            case 0x52:
+            case 0x52: // dastore
 //TODO impl
                 break;
-            case 0x53:
+            case 0x53: // aastore
 //TODO impl
                 break;
-            case 0x54:
+            case 0x54: // bastore
 //TODO impl
                 break;
-            case 0x55:
+            case 0x55: // castore
 //TODO impl
                 break;
-            case 0x56:
+            case 0x56: // sastore
 //TODO impl
                 break;
             case 0x57: // pop
@@ -743,5 +742,6 @@ public class Frame {
             default:
                 throw new IllegalArgumentException(String.format("Unknown bytecode %x", code));
         }
+        nextPC += reader.sizeAfterLastReset;
     }
 }

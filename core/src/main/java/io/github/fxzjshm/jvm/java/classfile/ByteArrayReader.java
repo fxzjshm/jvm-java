@@ -4,18 +4,31 @@ import java.io.ByteArrayInputStream;
 
 public class ByteArrayReader extends ByteArrayInputStream {
 
+    public int sizeAfterLastReset;
+
     public ByteArrayReader(byte[] buf) {
         super(buf);
     }
 
+    public synchronized void check() {
+        if (pos >= count) throw new RuntimeException("Not enough bytes!");
+    }
+
     @Override
     public synchronized int read() {
-        if (pos >= count) throw new RuntimeException("Not enough bytes!");
+        check();
+        sizeAfterLastReset++;
         return super.read();
     }
 
-    public synchronized int readInt8() {
+    public synchronized int readSigned() {
         return (pos < count) ? buf[pos++] : -1;
+    }
+
+    public synchronized int readInt8() {
+        check();
+        sizeAfterLastReset++;
+        return readSigned();
     }
 
     public synchronized int readUint8() {
@@ -75,5 +88,6 @@ public class ByteArrayReader extends ByteArrayInputStream {
 
     public synchronized void setPos(int pos) {
         this.pos = pos;
+        sizeAfterLastReset = 0;
     }
 }

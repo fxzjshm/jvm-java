@@ -16,7 +16,8 @@ gradle-app.setting
 /.nb-gradle/
 /nbproject/
 /.idea/
-src/test/resources/*.class
+*.class
 /local.properties
 .classpath
 .project
+*.iml
