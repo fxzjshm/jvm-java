@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
 import io.github.fxzjshm.jvm.java.classfile.ConstantPool;
+import io.github.fxzjshm.jvm.java.runtime.data.Method;
 
 public class Frame {
     public Map<Integer, Object> localVars = new LinkedHashMap<>();

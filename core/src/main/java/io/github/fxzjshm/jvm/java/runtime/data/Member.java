@@ -1,6 +1,7 @@
-package io.github.fxzjshm.jvm.java.runtime;
+package io.github.fxzjshm.jvm.java.runtime.data;
 
 import io.github.fxzjshm.jvm.java.classfile.MemberInfo;
+import io.github.fxzjshm.jvm.java.runtime.data.Class;
 
 public class Member {
     public MemberInfo info;

@@ -1,7 +1,6 @@
 package io.github.fxzjshm.jvm.java.test;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -10,7 +9,7 @@ import java.util.Objects;
 import io.github.fxzjshm.jvm.java.classfile.ClassFile;
 import io.github.fxzjshm.jvm.java.classfile.MemberInfo;
 import io.github.fxzjshm.jvm.java.runtime.Frame;
-import io.github.fxzjshm.jvm.java.runtime.Method;
+import io.github.fxzjshm.jvm.java.runtime.data.Method;
 import io.github.fxzjshm.jvm.java.runtime.Thread;
 
 

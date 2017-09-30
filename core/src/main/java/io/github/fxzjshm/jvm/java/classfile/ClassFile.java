@@ -35,7 +35,7 @@ public class ClassFile {
      * Constant pool index.
      */
     public int thisClass, superClass, interfaces[];
-    public String name, superClassName, interfaceNames[];
+    public String name, superClassName, interfaceNames[], packageName;
 
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public ClassFile(ByteArrayReader reader) throws IOException {
@@ -65,6 +65,8 @@ public class ClassFile {
         // Names
         int nameIndex = (int) cp.infos[thisClass].info;
         name = (String) cp.infos[nameIndex].info;
+        int divIndex = name.lastIndexOf("/");
+        packageName = (divIndex > -1) ? (name.substring(0, divIndex)) : ("");
 
         // Read members
         fields = loadMembers();
@@ -108,12 +110,6 @@ public class ClassFile {
                     /*attributes = */AttributeInfos.attributeInfos(reader, cp),
                     /*classFile = */this
             );
-            /*member.cp = cp;
-            member.accessFlags = reader.readUint16();
-            member.nameIndex = reader.readUint16();
-            member.descriptorIndex = reader.readUint16();
-            member.attributes = AttributeInfos.attributeInfos(reader, cp);
-            member.classFile = this;*/
             members[i] = member;
         }
         return members;

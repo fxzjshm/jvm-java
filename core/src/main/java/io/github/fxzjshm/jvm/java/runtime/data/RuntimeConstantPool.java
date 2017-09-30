@@ -1,6 +1,10 @@
-package io.github.fxzjshm.jvm.java.runtime;
+package io.github.fxzjshm.jvm.java.runtime.data;
 
 import io.github.fxzjshm.jvm.java.classfile.ConstantPool;
+import io.github.fxzjshm.jvm.java.runtime.ref.InterfaceMethodRef;
+import io.github.fxzjshm.jvm.java.runtime.ref.ClassRef;
+import io.github.fxzjshm.jvm.java.runtime.ref.FieldRef;
+import io.github.fxzjshm.jvm.java.runtime.ref.MethodRef;
 
 import static io.github.fxzjshm.jvm.java.classfile.ConstantPool.ConstantInfo.*;
 

@@ -1,5 +1,6 @@
-package io.github.fxzjshm.jvm.java.runtime;
+package io.github.fxzjshm.jvm.java.runtime.data;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Set;
 
 import io.github.fxzjshm.jvm.java.classfile.ClassFile;
 import io.github.fxzjshm.jvm.java.classfile.MemberInfo;
+import io.github.fxzjshm.jvm.java.loader.ClassLoader;
 
 public class Class {
     public static Map<String, Class> reflectMap = new Hashtable<>();
@@ -16,6 +18,9 @@ public class Class {
     public Set<Field> fields;
     public ClassFile classFile;
     public Class superClass, interfaces[];
+    public int instanceSlotCount, staticSlotCount;
+    public Object[] staticVars;
+    public RuntimeConstantPool rtcp;
 
     public Class(ClassFile cf, ClassLoader cl) {
         loader = cl;
@@ -31,6 +36,15 @@ public class Class {
             fields.add(new Field(fieldInfo, this));
         }
 
+        rtcp = new RuntimeConstantPool(this, cf.cp);
+
         reflectMap.put(cf.name, this);
+    }
+
+    public boolean isSubClassOf(Class target) {
+        for (Class c = superClass; c != null; c = c.superClass) {
+            if (c == target) return true;
+        }
+        return false;
     }
 }
