@@ -13,18 +13,41 @@ buildscript {
 }
 
 allprojects{
+    ext {
+        gdxVersion = '1.9.6'
+        junitVersion = '4.10'
+        ecjVersion = '4.6.1'
+        mainClass = 'io.github.fxzjshm.jvm.java.Main'
+    }
     repositories {
+        mavenLocal()
         mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        jcenter()
     }
 }
 
 project(":core"){
     apply plugin: 'java'
-    apply plugin: 'jacoco'
     dependencies {
-        testCompile 'junit:junit:4.10'
-        testCompile 'org.eclipse.jdt.core.compiler:ecj:4.6.1'
-        testCompile 'org.eclipse.jdt.core.compiler:ecj:4.6.1:sources'
+        testCompile "junit:junit:$junitVersion"
+        testCompile "org.eclipse.jdt.core.compiler:ecj:$ecjVersion"
+    }
+}
+
+project(":support-desktop"){
+    apply plugin: 'java'
+    dependencies {
+        compile project(":core")
+    }
+}
+
+project(":support-libgdx"){
+    apply plugin: 'java'
+    dependencies {
+        compile project(":core")
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
     }
 }
 
@@ -33,17 +56,15 @@ project(":test-gwt"){
     apply plugin: 'gwt'
     apply plugin: 'war'
     dependencies {
-        compile project(":core")
-        compile 'com.google.gwt:gwt-user:2.8.0'
-        compile 'com.google.gwt:gwt-dev:2.8.0'
+        compile project(":support-libgdx")
+        compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
     }
 }
 
 project(":test-jtransc"){
     apply plugin: 'java'
     apply plugin: 'jtransc'
-    project.ext.mainClassName = "io.github.fxzjshm.jvm.java.Main"
     dependencies {
-        compile project(":core")
+        compile project(":support-desktop")
     }
 }

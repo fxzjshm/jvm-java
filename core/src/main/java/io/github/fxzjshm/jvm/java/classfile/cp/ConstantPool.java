@@ -1,9 +1,11 @@
-package io.github.fxzjshm.jvm.java.classfile;
+package io.github.fxzjshm.jvm.java.classfile.cp;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 
-import static io.github.fxzjshm.jvm.java.classfile.ConstantPool.ConstantInfo.*;
+import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
+
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.*;
 
 /**
  * A constant pool that stores constant information in class files.
@@ -23,7 +25,6 @@ public class ConstantPool {
         for (int i = 1; i < cpCount; i++) {
             ConstantInfo ci = new ConstantInfo();
             ci.tag = reader.readUint8();
-            ConstantComplexInfo cinfo = new ConstantComplexInfo();
             switch (ci.tag) {
                 case CONSTANT_Integer:
                     ci.info = reader.readInt32();
@@ -44,33 +45,40 @@ public class ConstantPool {
                     break;
                 case CONSTANT_String:
                 case CONSTANT_Class:
-                    ci.info/*constant pool index*/ = reader.readUint16();
+                    Utf8RefInfo utf8RefInfo = new Utf8RefInfo();
+                    utf8RefInfo.cpIndex /* constant pool index */ = reader.readUint16();
+                    ci.info = utf8RefInfo;
                     break;
                 case CONSTANT_Fieldref:
                 case CONSTANT_Methodref:
                 case CONSTANT_InterfaceMethodref:
-                    cinfo.classIndex = reader.readUint16();
-                    cinfo.nameAndTypeIndex = reader.readUint16();
-                    ci.info = cinfo;
+                    MemberRefInfo memberRefInfo = new MemberRefInfo();
+                    memberRefInfo.classIndex = reader.readUint16();
+                    memberRefInfo.nameAndTypeIndex = reader.readUint16();
+                    ci.info = memberRefInfo;
                     break;
                 case CONSTANT_NameAndType:
-                    cinfo.nameIndex = reader.readUint16();
-                    cinfo.descriptorIndex = reader.readUint16();
-                    ci.info = cinfo;
+                    NameAndTypeRefInfo nameAndTypeRefInfo = new NameAndTypeRefInfo();
+                    nameAndTypeRefInfo.nameIndex = reader.readUint16();
+                    nameAndTypeRefInfo.descriptorIndex = reader.readUint16();
+                    ci.info = nameAndTypeRefInfo;
                     break;
                 case CONSTANT_MethodType:
-                    cinfo.descriptorIndex = reader.readUint16();
-                    ci.info = cinfo;
+                    MethodTypeInfo methodTypeInfo = new MethodTypeInfo();
+                    methodTypeInfo.descriptorIndex = reader.readUint16();
+                    ci.info = methodTypeInfo;
                     break;
                 case CONSTANT_MethodHandle:
-                    cinfo.referenceKind = reader.readUint8();
-                    cinfo.refernceIndex = reader.readUint16();
-                    ci.info = cinfo;
+                    MethodHandleInfo methodHandle = new MethodHandleInfo();
+                    methodHandle.referenceKind = reader.readUint8();
+                    methodHandle.referenceIndex = reader.readUint16();
+                    ci.info = methodHandle;
                     break;
                 case CONSTANT_InvokeDynamic:
-                    cinfo.bootstrapMethodAttrIndex = reader.readUint16();
-                    cinfo.nameAndTypeIndex = reader.readUint16();
-                    ci.info = cinfo;
+                    InvokeDynamicInfo invokeDynamicInfo = new InvokeDynamicInfo();
+                    invokeDynamicInfo.bootstrapMethodAttrIndex = reader.readUint16();
+                    invokeDynamicInfo.nameAndTypeIndex = reader.readUint16();
+                    ci.info = invokeDynamicInfo;
                     break;
                 default:
                     throw new ClassFormatError("Unknown constant pool tag:" + ci.tag);
@@ -78,6 +86,9 @@ public class ConstantPool {
             cp[i] = ci;
         }
         this.infos = cp;
+        for (int i = 1; i < cpCount; i++)
+            if (cp[i].info instanceof ConstantComplexInfo)
+                ((ConstantComplexInfo) cp[i].info).cache(this);
     }
 
     public static class ConstantInfo {
@@ -103,8 +114,10 @@ public class ConstantPool {
     /**
      * Contains some complex costant info. Some of the fields may be null, according to {@link ConstantInfo#tag}.
      */
-    public static class ConstantComplexInfo {
+    public static abstract class ConstantComplexInfo {
 
-        protected int /* constant pool index */ classIndex, nameIndex, nameAndTypeIndex, descriptorIndex, referenceKind, refernceIndex, bootstrapMethodAttrIndex;
+        // int /* constant pool index */ classIndex, nameIndex, nameAndTypeIndex, descriptorIndex, referenceKind, referenceIndex, bootstrapMethodAttrIndex;
+
+        public abstract void cache(ConstantPool cp);
     }
 }

@@ -4,19 +4,26 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import io.github.fxzjshm.jvm.java.classfile.Bitmask;
 import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
-import io.github.fxzjshm.jvm.java.classfile.ConstantPool;
+import io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool;
+import io.github.fxzjshm.jvm.java.runtime.data.Field;
+import io.github.fxzjshm.jvm.java.runtime.data.Instance;
 import io.github.fxzjshm.jvm.java.runtime.data.Method;
+import io.github.fxzjshm.jvm.java.runtime.data.RuntimeConstantPool;
+import io.github.fxzjshm.jvm.java.runtime.ref.ClassRef;
+import io.github.fxzjshm.jvm.java.runtime.data.Class;
+import io.github.fxzjshm.jvm.java.runtime.ref.FieldRef;
 
 public class Frame {
-    public Map<Integer, Object> localVars = new LinkedHashMap<>();
-    public OperandStack<Object> operandStack = new OperandStack<>();
-    public int nextPC;
+    private Map<Integer, Object> localVars = new LinkedHashMap<>();
+    private OperandStack<Object> operandStack = new OperandStack<>();
+    private int nextPC;
     /**
      * Refers to the thread that contains this frame.
      */
     public Thread thread;
-    public Method method;
+    private Method method;
     public ByteArrayReader reader;
 
     public Frame(Thread thread, Method method) {
@@ -25,7 +32,7 @@ public class Frame {
         reader = new ByteArrayReader(method.code);
     }
 
-    public void branch(int offset) {
+    private void branch(int offset) {
         nextPC = reader.getPos() + offset - 2 * reader.sizeAfterLastReset;
     }
 
@@ -670,6 +677,16 @@ public class Frame {
                 break;
             case 0xb3:// putstatic
 //TODO impl
+                index = reader.readUint16();
+                Field field = ((FieldRef) (method.clazz.rtcp.consts[index])).resolvedField();
+                if ((field.info.accessFlags & Bitmask.ACC_STATIC) == 0)
+                    throw new IncompatibleClassChangeError("Not a static field!");
+                if ((field.info.accessFlags & Bitmask.ACC_FINAL) != 0) {
+                    if (method.clazz != field.clazz || (!Objects.equals(method.info.name, "<clinit>")))
+                        throw new IllegalAccessError("Cannot init a final field "
+                                + field.info.name + " fron normal method "
+                                + method.clazz.classFile.name + "/" + method.info.name);
+                }
                 break;
             case 0xb4:// getfield
 //TODO impl
@@ -693,7 +710,15 @@ public class Frame {
 //TODO impl
                 break;
             case 0xbb:// new
-//TODO impl
+                index = reader.readUint16();
+                RuntimeConstantPool rcp = method.clazz.rtcp;
+                ClassRef classRef = (ClassRef) (rcp.consts[index]);
+                Class clazz = classRef.resolvedClass();
+                if (((clazz.classFile.accessFlags & Bitmask.ACC_INTERFACE) != 0)
+                        || ((clazz.classFile.accessFlags & Bitmask.ACC_ABSTRACT) != 0))
+                    throw new InstantiationError("Cannot new " + clazz.classFile.name);
+                Instance instance = new Instance(clazz);
+                operandStack.push(instance);
                 break;
             case 0xbc:// newarray
 //TODO impl

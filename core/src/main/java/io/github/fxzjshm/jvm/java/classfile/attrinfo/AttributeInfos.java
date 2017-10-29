@@ -1,7 +1,7 @@
 package io.github.fxzjshm.jvm.java.classfile.attrinfo;
 
 import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
-import io.github.fxzjshm.jvm.java.classfile.ConstantPool;
+import io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool;
 import io.github.fxzjshm.jvm.java.classfile.attrinfo.MarkerAttribute.DeprecatedAttribute;
 import io.github.fxzjshm.jvm.java.classfile.attrinfo.MarkerAttribute.SyntheticAttribute;
 

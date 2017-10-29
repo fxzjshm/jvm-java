@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import io.github.fxzjshm.jvm.java.classfile.attrinfo.AttributeInfos;
 import io.github.fxzjshm.jvm.java.classfile.attrinfo.AttributeInfos.AttributeInfo;
+import io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool;
+import io.github.fxzjshm.jvm.java.classfile.cp.Utf8RefInfo;
 
 /**
  * Stores .class file information.
@@ -62,12 +64,6 @@ public class ClassFile {
         superClass = reader.readUint16();
         interfaces = reader.readUint16s();
 
-        // Names
-        int nameIndex = (int) cp.infos[thisClass].info;
-        name = (String) cp.infos[nameIndex].info;
-        int divIndex = name.lastIndexOf("/");
-        packageName = (divIndex > -1) ? (name.substring(0, divIndex)) : ("");
-
         // Read members
         fields = loadMembers();
         methods = loadMembers();
@@ -75,14 +71,16 @@ public class ClassFile {
         // Attribute info
         attributes = AttributeInfos.attributeInfos(reader, cp);
 
-        int superClassNameIndex = (int) cp.infos[superClass].info;
-        superClassName = (String) cp.infos[superClassNameIndex].info;
+        // Names
+        name = ((Utf8RefInfo) (cp.infos[thisClass].info)).s;
+        int divIndex = name.lastIndexOf("/");
+        packageName = (divIndex > -1) ? (name.substring(0, divIndex)) : ("");
+
+        superClassName = ((Utf8RefInfo) (cp.infos[superClass].info)).s;
 
         interfaceNames = new String[interfaces.length];
         for (int i = 0; i < interfaceNames.length; i++) {
-            int interfaceClass = interfaces[i];
-            int interfaceClassNameIndex = (int) cp.infos[interfaceClass].info;
-            interfaceNames[i] = (String) cp.infos[interfaceClassNameIndex].info;
+            interfaceNames[i] = ((Utf8RefInfo) (cp.infos[interfaces[i]].info)).s;
         }
     }
 

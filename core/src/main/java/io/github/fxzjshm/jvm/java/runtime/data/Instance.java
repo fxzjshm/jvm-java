@@ -1,8 +1,5 @@
 package io.github.fxzjshm.jvm.java.runtime.data;
 
-import java.util.Hashtable;
-import java.util.Map;
-
 public class Instance {
     public Class clazz;
     public Object[] data, extra;

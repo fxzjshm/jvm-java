@@ -1,17 +1,14 @@
 package io.github.fxzjshm.jvm.java.runtime.data;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Map;
 import java.util.Set;
 
 import io.github.fxzjshm.jvm.java.classfile.ClassFile;
 import io.github.fxzjshm.jvm.java.classfile.MemberInfo;
 import io.github.fxzjshm.jvm.java.loader.ClassLoader;
+import io.github.fxzjshm.jvm.java.runtime.Reflect;
 
 public class Class {
-    public static Map<String, Class> reflectMap = new Hashtable<>();
 
     public ClassLoader loader;
     public Set<Method> methods;
@@ -38,7 +35,7 @@ public class Class {
 
         rtcp = new RuntimeConstantPool(this, cf.cp);
 
-        reflectMap.put(cf.name, this);
+        Reflect.classMap.put(cf.name, this);
     }
 
     public boolean isSubClassOf(Class target) {

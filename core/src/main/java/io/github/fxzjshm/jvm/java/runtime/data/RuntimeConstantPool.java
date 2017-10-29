@@ -1,12 +1,13 @@
 package io.github.fxzjshm.jvm.java.runtime.data;
 
-import io.github.fxzjshm.jvm.java.classfile.ConstantPool;
+import io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool;
+import io.github.fxzjshm.jvm.java.classfile.cp.MemberRefInfo;
 import io.github.fxzjshm.jvm.java.runtime.ref.InterfaceMethodRef;
 import io.github.fxzjshm.jvm.java.runtime.ref.ClassRef;
 import io.github.fxzjshm.jvm.java.runtime.ref.FieldRef;
 import io.github.fxzjshm.jvm.java.runtime.ref.MethodRef;
 
-import static io.github.fxzjshm.jvm.java.classfile.ConstantPool.ConstantInfo.*;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.*;
 
 public class RuntimeConstantPool {
     public Class clazz;
@@ -30,13 +31,13 @@ public class RuntimeConstantPool {
                     o = cp.infos[(int) cp.infos[i].info].info;
                     break;
                 case CONSTANT_Class:
-                    o = new ClassRef();
+                    o = new ClassRef(this);
                     break;
                 case CONSTANT_Fieldref:
-                    o = new FieldRef();
+                    o = new FieldRef(this, (MemberRefInfo) cp.infos[i].info);
                     break;
                 case CONSTANT_Methodref:
-                    o = new MethodRef();
+                    o = new MethodRef(this, (MemberRefInfo) cp.infos[i].info);
                     break;
                 case CONSTANT_InterfaceMethodref:
                     o = new InterfaceMethodRef();

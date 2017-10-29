@@ -7,16 +7,24 @@ import io.github.fxzjshm.jvm.java.runtime.data.Class;
 import io.github.fxzjshm.jvm.java.runtime.data.RuntimeConstantPool;
 
 public class SymRef {
-    public RuntimeConstantPool cp;
+    public RuntimeConstantPool rcp;
     public String className;
     public Class clazz;
 
-    public Class resolvedClass() throws IOException {
+    public SymRef(RuntimeConstantPool cp) {
+        this.rcp = cp;
+    }
+
+    public Class resolvedClass() {
         if (clazz == null) {
-            Class d = cp.clazz, c = d.loader.loadClass(className);
-            if (!Bitmask.isAccessibleTo(c, d, d.classFile.accessFlags))
-                throw new IllegalAccessError("Class " + c.classFile.name + " cannot access to class " + d.classFile.name + ".");
-            clazz = c;
+            try {
+                Class d = rcp.clazz, c = d.loader.loadClass(className);
+                if (!Bitmask.isAccessibleTo(c, d, d.classFile.accessFlags))
+                    throw new IllegalAccessError("Class " + c.classFile.name + " cannot access to class " + d.classFile.name + ".");
+                clazz = c;
+            } catch (IOException e) {
+                throw new RuntimeException("Cannot load class " + className, e);
+            }
         }
         return clazz;
     }

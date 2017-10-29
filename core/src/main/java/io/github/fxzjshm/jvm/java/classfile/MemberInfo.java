@@ -1,6 +1,6 @@
 package io.github.fxzjshm.jvm.java.classfile;
 
-import io.github.fxzjshm.jvm.java.classfile.ConstantPool.ConstantInfo;
+import io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool;
 import io.github.fxzjshm.jvm.java.classfile.attrinfo.AttributeInfos.AttributeInfo;
 import io.github.fxzjshm.jvm.java.classfile.attrinfo.ConstantValueAttribute;
 
