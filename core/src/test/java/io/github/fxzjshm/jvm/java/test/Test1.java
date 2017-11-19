@@ -5,7 +5,6 @@ import org.junit.*;
 import java.io.IOException;
 
 import io.github.fxzjshm.jvm.java.Main;
-import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
 
 public class Test1 {
 

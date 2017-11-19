@@ -24,8 +24,8 @@ public abstract class Bitmask {
             ACC_ABSTRACT = 0x0400,
             ACC_STRICTFP = 0x0800,
             ACC_SYNTHETIC = 0x1000,
-            ACC_ANNOTAYION = 0X2000,
-            ACC_ENUM = 0X4000;
+            ACC_ANNOTAYION = 0x2000,
+            ACC_ENUM = 0x4000;
 
     /**
      * @param target {@link Class} of the object to be accessed.

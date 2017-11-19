@@ -21,3 +21,16 @@ gradle-app.setting
 .classpath
 .project
 *.iml
+.settings/
+
+## GWT
+war/
+test-gwt/war/gwt_bree/
+test-gwt/gwt-unitCache/
+.apt_generated/
+test-gwt/war/WEB-INF/deploy/
+test-gwt/war/WEB-INF/classes/
+.gwt/
+gwt-unitCache/
+www-test/
+.gwt-tmp/

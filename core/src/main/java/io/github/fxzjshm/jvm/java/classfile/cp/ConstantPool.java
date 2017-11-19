@@ -1,11 +1,24 @@
 package io.github.fxzjshm.jvm.java.classfile.cp;
 
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_Class;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_Double;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_Fieldref;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_Float;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_Integer;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_InterfaceMethodref;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_InvokeDynamic;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_Long;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_MethodHandle;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_MethodType;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_Methodref;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_NameAndType;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_String;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_Utf8;
+
 import java.io.DataInputStream;
 import java.io.IOException;
 
 import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
-
-import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.*;
 
 /**
  * A constant pool that stores constant information in class files.
@@ -22,6 +35,7 @@ public class ConstantPool {
     public ConstantPool(ByteArrayReader reader) throws IOException {
         int cpCount = reader.readUint16();
         ConstantInfo[] cp = new ConstantInfo[cpCount];
+        boolean i2 = false;
         for (int i = 1; i < cpCount; i++) {
             ConstantInfo ci = new ConstantInfo();
             ci.tag = reader.readUint8();
@@ -34,11 +48,11 @@ public class ConstantPool {
                     break;
                 case CONSTANT_Long:
                     ci.info = reader.readInt64();
-                    i++;
+                    i2 = true;
                     break;
                 case CONSTANT_Double:
                     ci.info = Double.longBitsToDouble(reader.readInt64());
-                    i++;
+                    i2 = true;
                     break;
                 case CONSTANT_Utf8:
                     ci.info = new DataInputStream(reader).readUTF();
@@ -84,10 +98,14 @@ public class ConstantPool {
                     throw new ClassFormatError("Unknown constant pool tag:" + ci.tag);
             }
             cp[i] = ci;
+            if(i2) {
+                i++;
+                i2 = false;
+            }
         }
         this.infos = cp;
         for (int i = 1; i < cpCount; i++)
-            if (cp[i].info instanceof ConstantComplexInfo)
+            if (cp[i] != null && cp[i].info instanceof ConstantComplexInfo)
                 ((ConstantComplexInfo) cp[i].info).cache(this);
     }
 

@@ -3,6 +3,8 @@ package io.github.fxzjshm.jvm.java.runtime;
 import java.util.Stack;
 
 public class OperandStack<E> extends Stack<E> {
+    private static final long serialVersionUID = -7684406741364834757L;
+
     @Override
     public E push(E item) {
         super.push(item);
@@ -26,5 +28,14 @@ public class OperandStack<E> extends Stack<E> {
 
     public synchronized E pushRaw(E item) {
         return super.push(item);
+    }
+
+    @Override
+    public synchronized E peek() {
+        int size = size();
+        if (size < 2)
+            return super.peek();
+        E item = elementAt(size - 2);
+        return (item instanceof Long || item instanceof Double) ? item : elementAt(size - 1);
     }
 }

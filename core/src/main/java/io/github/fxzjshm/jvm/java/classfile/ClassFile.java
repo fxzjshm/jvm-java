@@ -64,13 +64,6 @@ public class ClassFile {
         superClass = reader.readUint16();
         interfaces = reader.readUint16s();
 
-        // Read members
-        fields = loadMembers();
-        methods = loadMembers();
-
-        // Attribute info
-        attributes = AttributeInfos.attributeInfos(reader, cp);
-
         // Names
         name = ((Utf8RefInfo) (cp.infos[thisClass].info)).s;
         int divIndex = name.lastIndexOf("/");
@@ -82,6 +75,13 @@ public class ClassFile {
         for (int i = 0; i < interfaceNames.length; i++) {
             interfaceNames[i] = ((Utf8RefInfo) (cp.infos[interfaces[i]].info)).s;
         }
+
+        // Read members
+        fields = loadMembers();
+        methods = loadMembers();
+
+        // Attribute info
+        attributes = AttributeInfos.attributeInfos(reader, cp);
     }
 
     public void checkVersion() {
@@ -107,7 +107,7 @@ public class ClassFile {
                     /*descriptorIndex = */reader.readUint16(),
                     /*attributes = */AttributeInfos.attributeInfos(reader, cp),
                     /*classFile = */this
-            );
+                    );
             members[i] = member;
         }
         return members;

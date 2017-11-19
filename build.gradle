@@ -7,17 +7,21 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
+        classpath 'org.wisepersist:gwt-gradle-plugin:1.0.1'
         classpath "com.jtransc:jtransc-gradle-plugin:0.6.7"
+        classpath "org.akhikhl.gretty:gretty:2.0.0"
     }
 }
 
 allprojects{
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
     ext {
         gdxVersion = '1.9.6'
         junitVersion = '4.10'
         ecjVersion = '4.6.1'
         mainClass = 'io.github.fxzjshm.jvm.java.Main'
+        mainClassName = mainClass
     }
     repositories {
         mavenLocal()
@@ -57,7 +61,9 @@ project(":test-gwt"){
     apply plugin: 'war'
     dependencies {
         compile project(":support-libgdx")
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
     }
 }
 

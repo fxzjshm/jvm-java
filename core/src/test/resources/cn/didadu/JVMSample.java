@@ -6,6 +6,7 @@ package cn.didadu;
 public class JVMSample {
 
     public static class TestExc extends RuntimeException {
+        private static final long serialVersionUID = -1877868223860509553L;
     }
 
     void cantBeZero(int i) {

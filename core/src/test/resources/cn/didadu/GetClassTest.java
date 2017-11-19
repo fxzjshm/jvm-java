@@ -11,12 +11,12 @@ public class GetClassTest {
         System.out.println(long.class.getName()); // long
         System.out.println(float.class.getName()); // float
         System.out.println(double.class.getName()); // double
-        System.out.println(Object.class.getName()); // java.lang.Object
+        System.out.println(Object.class.getName()); // java.lang.RObject
         System.out.println(GetClassTest.class.getName()); // jvmgo.book.ch09.GetClassTest
         System.out.println(int[].class.getName()); // [I
         System.out.println(int[][].class.getName()); // [[I
-        System.out.println(Object[].class.getName()); // [Ljava.lang.Object;
-        System.out.println(Object[][].class.getName()); // [[Ljava.lang.Object;
+        System.out.println(Object[].class.getName()); // [Ljava.lang.RObject;
+        System.out.println(Object[][].class.getName()); // [[Ljava.lang.RObject;
         System.out.println(Runnable.class.getName()); // java.lang.Runnable
         System.out.println("abc".getClass().getName()); // java.lang.String
         System.out.println(new double[0].getClass().getName()); // [D

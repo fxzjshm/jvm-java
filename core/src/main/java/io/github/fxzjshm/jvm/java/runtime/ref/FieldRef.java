@@ -20,7 +20,7 @@ public class FieldRef extends MemberRef {
         if (field == null) {
             Class d = rcp.clazz, c = resolvedClass();
             Field field = lookupField(c, name, descriptor);
-            if (field == null){
+            if (field == null) {
                 throw new NoSuchFieldError(name + " : " + descriptor);
             }
             if (!Bitmask.isAccessibleTo(d, c, field.info.accessFlags))
@@ -40,5 +40,10 @@ public class FieldRef extends MemberRef {
         }
         if (c.superClass != null) return lookupField(c.superClass, name, descriptor);
         return null;
+    }
+
+    public boolean isInstanceOf(Class clazz) {
+        resolvedField();
+        return clazz.isAssignableFrom(this.clazz);
     }
 }
