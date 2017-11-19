@@ -51,7 +51,7 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle" }}
         
       # run tests!
-      - run: gradle test test-gwt:checkGwt test-jtransc:runCpp test-jtransc:runDart
+      - run: gradle check test-gwt:checkGwt test-jtransc:runCpp test-jtransc:runDart
       - run:
           name: Save test results 
           command: |
