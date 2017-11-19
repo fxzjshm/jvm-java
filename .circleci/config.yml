@@ -40,7 +40,7 @@ jobs:
       # Set up the location of the stable repository.
       - run: sudo sh -c 'curl https://storage.googleapis.com/download.dartlang.org/linux/debian/dart_stable.list > /etc/apt/sources.list.d/dart_stable.list'
       - run: sudo apt-get update
-      - run: sudo apt-get install dart g++ nodejs-legacy cmake
+      - run: sudo apt-get install dart g++ nodejs-legacy cmake automake
       - run: gradle dependencies
 
       - save_cache:
@@ -48,6 +48,7 @@ jobs:
             - ~/.m2
             - ~/.gradle/caches
             - ~/.gradle/wrapper
+            - ~/.jtransc
           key: v1-dependencies-{{ checksum "build.gradle" }}
         
       # run tests!
@@ -62,3 +63,4 @@ jobs:
           path: ~/junit
       - store_artifacts:
           path: ~/junit
+      - run: bash <(curl -s https://codecov.io/bash)
