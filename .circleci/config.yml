@@ -42,14 +42,6 @@ jobs:
       - run: sudo apt-get update
       - run: sudo apt-get install dart g++ nodejs-legacy cmake automake libtool pkg-config
 
-      - save_cache:
-          paths:
-            - ~/.m2
-            - ~/.gradle/caches
-            - ~/.gradle/wrapper
-            - ~/.jtransc
-          key: v1-dependencies-{{ checksum "build.gradle" }}
-        
       # run tests!
       - run: gradle check test-gwt:checkGwt test-jtransc:runCpp test-jtransc:runDart
       - run:
@@ -63,3 +55,10 @@ jobs:
       - store_artifacts:
           path: ~/junit
       - run: bash <(curl -s https://codecov.io/bash)
+            - save_cache:
+          paths:
+            - ~/.m2
+            - ~/.gradle/caches
+            - ~/.gradle/wrapper
+            - ~/.jtransc
+          key: v1-dependencies-{{ checksum "build.gradle" }}
