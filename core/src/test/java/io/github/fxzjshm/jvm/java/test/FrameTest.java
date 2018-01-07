@@ -3,6 +3,7 @@ package io.github.fxzjshm.jvm.java.test;
 import java.io.IOException;
 import java.util.Objects;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -25,7 +26,6 @@ public class FrameTest {
         }
     }
 
-    @Ignore
     @Test
     public void testExec() throws Throwable {
         ClassFile cf = ClassFileTest.classMap.get("Gauss");
@@ -35,7 +35,7 @@ public class FrameTest {
                     Method method = new Method(methodInfo, null);
                     Frame frame = new Frame(new Thread(), method);
                     while (frame.reader.available() != 0) frame.exec();
-                    System.out.println();
+                    Assert.assertEquals(5050,frame.localVars.get(1));
                 }
             }
         }

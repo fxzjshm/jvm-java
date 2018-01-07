@@ -39,6 +39,11 @@ project(":core"){
         testCompile "junit:junit:$junitVersion"
         testCompile "org.eclipse.jdt.core.compiler:ecj:$ecjVersion"
     }
+    jar {
+        manifest {
+            attributes("Main-Class": project.ext.mainClass)
+        }
+    }
 }
 
 project(":support-desktop"){

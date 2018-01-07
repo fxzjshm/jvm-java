@@ -3,6 +3,7 @@
 <module rename-to="html">
 	<inherits name='io.github.fxzjshm.jvm-java' />
     <inherits name="java-emu" />
+    <inherits name="com.google.gwt.user.User" />
     <!-- source path="client" -->
 	<entry-point class='io.github.fxzjshm.jvm.java.test.gwt.client.GwtModule' />
 	<set-configuration-property name='xsiframe.failIfScriptTag' value='FALSE'/>

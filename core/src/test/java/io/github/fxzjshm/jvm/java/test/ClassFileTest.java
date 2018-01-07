@@ -64,7 +64,7 @@ public class ClassFileTest {
             if (name2file.containsKey(classLocation)) {
                 if (name2file.get(classLocation).lastModified() > src.lastModified()) {
                     System.out.println("Cached: " + src.getName());
-                    // continue;
+                    continue;
                 }
             }
             names.append(" ").append(src.getName());
@@ -83,6 +83,8 @@ public class ClassFileTest {
     @Test
     public void parseClass() throws IOException {
         Set<File> classes = searchFile(new SuffixFilter("class"), dir);
+        Set<File> clazzes = searchFile(new SuffixFilter("bytecode"), dir);
+        classes.addAll(clazzes);
         if (classes != null) {
             for (File classFile : classes) {
                 System.out.println("Testing " + classFile.getName());

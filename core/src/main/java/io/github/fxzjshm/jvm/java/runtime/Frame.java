@@ -15,7 +15,7 @@ import io.github.fxzjshm.jvm.java.runtime.data.Class;
 import io.github.fxzjshm.jvm.java.runtime.ref.FieldRef;
 
 public class Frame {
-    private Map<Integer, Object> localVars = new LinkedHashMap<>();
+    public Map<Integer, Object> localVars = new LinkedHashMap<>();
     private OperandStack<Object> operandStack = new OperandStack<>();
     private int nextPC;
     /**
