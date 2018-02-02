@@ -81,11 +81,11 @@ public class Frame {
 //TODO impl
                 int index = (code == 0x12) ? reader.readUint8() : reader.readUint16();
                 Object c = method.clazz.rtcp.consts[index];
-                if (c instanceof Integer || c instanceof Float || c instanceof Long || c instanceof Double) {
+                if (c instanceof Integer || c instanceof Float || c instanceof Long || c instanceof Double || c instanceof String) {
                     operandStack.push(c);
-                }/* else if (c instanceof ClassRef) {
+                }else if (c instanceof ClassRef) {
                     operandStack.push(((ClassRef) c).resolvedClass().jClass());
-                }*/ else {
+                }else {
                     throw new UnsupportedOperationException("TODO: ldc"); // TODO: ldc
                 }
                 break;
