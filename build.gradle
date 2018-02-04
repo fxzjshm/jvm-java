@@ -20,6 +20,7 @@ allprojects{
         gdxVersion = '1.9.8'
         junitVersion = '4.10'
         ecjVersion = '4.6.1'
+        gwtVersion = '2.8.0'
         mainClass = 'io.github.fxzjshm.jvm.java.Main'
         mainClassName = mainClass
     }
@@ -63,15 +64,26 @@ project(":support-libgdx"){
     }
 }
 
+project(":test-main"){
+    apply plugin: 'java'
+    dependencies {
+        compile project(":core")
+        // testCompile project(":core")
+        testCompile "junit:junit:$junitVersion"
+    }
+}
+
 project(":test-gwt"){
     apply plugin: 'java'
     apply plugin: 'gwt'
     apply plugin: 'war'
     dependencies {
         compile project(":support-libgdx")
+        compile project(":test-main")
         compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
+        
     }
 }
 
@@ -80,5 +92,6 @@ project(":test-jtransc"){
     apply plugin: 'jtransc'
     dependencies {
         compile project(":support-desktop")
+        compile project(":test-main")
     }
 }

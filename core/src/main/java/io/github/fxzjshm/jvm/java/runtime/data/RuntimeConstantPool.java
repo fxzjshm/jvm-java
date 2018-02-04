@@ -1,5 +1,6 @@
 package io.github.fxzjshm.jvm.java.runtime.data;
 
+import io.github.fxzjshm.jvm.java.api.Class;
 import io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool;
 import io.github.fxzjshm.jvm.java.classfile.cp.MemberRefInfo;
 import io.github.fxzjshm.jvm.java.runtime.ref.InterfaceMethodRef;

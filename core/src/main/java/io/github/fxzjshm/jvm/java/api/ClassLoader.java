@@ -1,8 +1,10 @@
 package io.github.fxzjshm.jvm.java.api;
 
-/**
- * Created by fxzjshm on 2018/2/2.
- */
+import java.io.IOException;
+
+import io.github.fxzjshm.jvm.java.runtime.VM;
 
 public interface ClassLoader {
+    Class loadClass(String name) throws IOException;
+    VM vm();
 }

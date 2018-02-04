@@ -2,7 +2,7 @@ package io.github.fxzjshm.jvm.java.classfile;
 
 import java.util.Objects;
 
-import io.github.fxzjshm.jvm.java.runtime.data.Class;
+import io.github.fxzjshm.jvm.java.api.Class;
 
 /**
  * Bit masks for reading access flags. e.g isPublic = accessFlags | ACC_PUBLIC;

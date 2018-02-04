@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import io.github.fxzjshm.jvm.java.api.Class;
 import io.github.fxzjshm.jvm.java.classfile.Bitmask;
 import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
 import io.github.fxzjshm.jvm.java.runtime.data.Field;
@@ -11,7 +12,6 @@ import io.github.fxzjshm.jvm.java.runtime.data.Instance;
 import io.github.fxzjshm.jvm.java.runtime.data.Method;
 import io.github.fxzjshm.jvm.java.runtime.data.RuntimeConstantPool;
 import io.github.fxzjshm.jvm.java.runtime.ref.ClassRef;
-import io.github.fxzjshm.jvm.java.runtime.data.Class;
 import io.github.fxzjshm.jvm.java.runtime.ref.FieldRef;
 
 public class Frame {
@@ -78,13 +78,13 @@ public class Frame {
             case 0x12: // ldc
             case 0x13: // ldc_w
             case 0x14: // ldc2_w
-//TODO impl
+                //TODO impl
                 int index = (code == 0x12) ? reader.readUint8() : reader.readUint16();
                 Object c = method.clazz.rtcp.consts[index];
                 if (c instanceof Integer || c instanceof Float || c instanceof Long || c instanceof Double || c instanceof String) {
                     operandStack.push(c);
                 }else if (c instanceof ClassRef) {
-                    operandStack.push(((ClassRef) c).resolvedClass().jClass());
+                    operandStack.push(((ClassRef) c).resolvedClass().jClass);
                 }else {
                     throw new UnsupportedOperationException("TODO: ldc"); // TODO: ldc
                 }
@@ -127,28 +127,28 @@ public class Frame {
                 operandStack.push(localVars.get(code - 0x2a));
                 break;
             case 0x2e: // iaload
-//TODO impl
+                //TODO impl
                 break;
             case 0x2f: // laload
-//TODO impl
+                //TODO impl
                 break;
             case 0x30: // faload
-//TODO impl
+                //TODO impl
                 break;
             case 0x31: // daload
-//TODO impl
+                //TODO impl
                 break;
             case 0x32: // aaload
-//TODO impl
+                //TODO impl
                 break;
             case 0x33: // baload
-//TODO impl
+                //TODO impl
                 break;
             case 0x34: // caload
-//TODO impl
+                //TODO impl
                 break;
             case 0x35: // saload
-//TODO impl
+                //TODO impl
                 break;
             case 0x36: // istore
             case 0x37: // lstore
@@ -188,28 +188,28 @@ public class Frame {
                 localVars.put(code - 0x4b, operandStack.pop());
                 break;
             case 0x4f: // iastore
-//TODO impl
+                //TODO impl
                 break;
             case 0x50: // lastore
-//TODO impl
+                //TODO impl
                 break;
             case 0x51: // fastore
-//TODO impl
+                //TODO impl
                 break;
             case 0x52: // dastore
-//TODO impl
+                //TODO impl
                 break;
             case 0x53: // aastore
-//TODO impl
+                //TODO impl
                 break;
             case 0x54: // bastore
-//TODO impl
+                //TODO impl
                 break;
             case 0x55: // castore
-//TODO impl
+                //TODO impl
                 break;
             case 0x56: // sastore
-//TODO impl
+                //TODO impl
                 break;
             case 0x57: // pop
                 operandStack.popRaw();
@@ -648,22 +648,22 @@ public class Frame {
                 branch(defaultOffset);
                 break;
             case 0xac:// ireturn
-//TODO impl
+                //TODO impl
                 break;
             case 0xad:// lreturn
-//TODO impl
+                //TODO impl
                 break;
             case 0xae:// freturn
-//TODO impl
+                //TODO impl
                 break;
             case 0xaf:// dreturn
-//TODO impl
+                //TODO impl
                 break;
             case 0xb0:// areturn
-//TODO impl
+                //TODO impl
                 break;
             case 0xb1:// return
-//TODO impl
+                //TODO impl
                 break;
             case 0xb2:// getstatic
             case 0xb3:// putstatic
@@ -715,20 +715,20 @@ public class Frame {
                 }
                 break;
             case 0xb6:// invokevirtual
-//TODO impl
+                //TODO impl
                 break;
             case 0xb7:// invokespecial
-//TODO impl
+                //TODO impl
                 operandStack.pop();
                 break;
             case 0xb8:// invokestatic
-//TODO impl
+                //TODO impl
                 break;
             case 0xb9:// invokeinterface
-//TODO impl
+                //TODO impl
                 break;
             case 0xba:// invokedynamic
-//TODO impl
+                //TODO impl
                 break;
             case 0xbb:// new
                 index = reader.readUint16();
@@ -742,16 +742,16 @@ public class Frame {
                 operandStack.push(instance);
                 break;
             case 0xbc:// newarray
-//TODO impl
+                //TODO impl
                 break;
             case 0xbd:// anewarray
-//TODO impl
+                //TODO impl
                 break;
             case 0xbe:// arraylength
-//TODO impl
+                //TODO impl
                 break;
             case 0xbf:// athrow
-//TODO impl
+                //TODO impl
                 break;
             case 0xc0:// checkcast
                 index = reader.readUint16();
@@ -775,31 +775,31 @@ public class Frame {
                 }
                 break;
             case 0xc2:// monitorenter
-//TODO impl
+                //TODO impl
                 break;
             case 0xc3:// monitorexit
-//TODO impl
+                //TODO impl
                 break;
             case 0xc4:// wide
-//TODO impl
+                //TODO impl
                 break;
             case 0xc5:// multianewarray
-//TODO impl
+                //TODO impl
                 break;
             case 0xc6:// ifnull
-//TODO impl
+                //TODO impl
                 break;
             case 0xc7:// ifnonnull
-//TODO impl
+                //TODO impl
                 break;
             case 0xc8:// goto_w
-//TODO impl
+                //TODO impl
                 break;
             case 0xc9:// jsr_w
-//TODO impl
+                //TODO impl
                 break;
             case 0xca:// breakpoint
-//TODO impl
+                //TODO impl
                 break;
             default:
                 throw new IllegalArgumentException(String.format("Unknown bytecode %x", code));

@@ -2,12 +2,11 @@ package io.github.fxzjshm.jvm.java.runtime.ref;
 
 import java.util.Objects;
 
+import io.github.fxzjshm.jvm.java.api.Class;
 import io.github.fxzjshm.jvm.java.classfile.Bitmask;
 import io.github.fxzjshm.jvm.java.classfile.cp.MemberRefInfo;
 import io.github.fxzjshm.jvm.java.runtime.data.Field;
 import io.github.fxzjshm.jvm.java.runtime.data.RuntimeConstantPool;
-import io.github.fxzjshm.jvm.java.runtime.data.Class;
-
 
 public class FieldRef extends MemberRef {
     private Field field;

@@ -2,13 +2,11 @@ package io.github.fxzjshm.jvm.java.runtime.ref;
 
 import java.util.Objects;
 
+import io.github.fxzjshm.jvm.java.api.Class;
 import io.github.fxzjshm.jvm.java.classfile.Bitmask;
 import io.github.fxzjshm.jvm.java.classfile.cp.MemberRefInfo;
-import io.github.fxzjshm.jvm.java.runtime.data.Class;
 import io.github.fxzjshm.jvm.java.runtime.data.Method;
 import io.github.fxzjshm.jvm.java.runtime.data.RuntimeConstantPool;
-
-import static io.github.fxzjshm.jvm.java.runtime.ref.MethodRef.MethodLookup.lookupMethod;
 
 public class MethodRef extends MemberRef {
     private Method method = null;
@@ -30,12 +28,12 @@ public class MethodRef extends MemberRef {
         if ((c.classFile.accessFlags & Bitmask.ACC_INTERFACE) != 0) {
             throw new IncompatibleClassChangeError(c.classFile.name + " should not be an interface");
         }
-        Method method = lookupMethod(c, name, descriptor);
+        Method method = MethodLookup.lookupMethod(c, name, descriptor);
         if (method == null) {
             throw new NoSuchMethodError("Cannot find " + className + '.' + name + '(' + descriptor + ')');
         }
         if (!Bitmask.isAccessibleTo(d, c, method.info.accessFlags)) {
-            throw new IllegalAccessError("Cannot access " + c.classFile.name + '.' + method.info.name + "from" + d.classFile.name)
+            throw new IllegalAccessError("Cannot access " + c.classFile.name + '.' + method.info.name + "from" + d.classFile.name);
         }
     }
 
@@ -52,12 +50,30 @@ public class MethodRef extends MemberRef {
         private static Method lookupMethodInClass(Class clazz, String name, String descriptor) {
             for (Class c = clazz; c != null; c = c.superClass) {
                 for (Method method : c.methods) {
-                    if (Objects.equals(method.info.name, name) && Objects.equals(method.info.descriptor, descriptor)) {
+                    if (checkMethod(method, name, descriptor)) {
                         return method;
                     }
                 }
             }
             return null;
+        }
+
+        private static Method lookupMethodInInterfaces(Class clazz, String name, String descriptor) {
+            for (Class iface : clazz.interfaces) {
+                for (Method method : iface.methods) {
+                    if (checkMethod(method, name, descriptor)) {
+                        return method;
+                    }
+                }
+                Method method = lookupMethodInInterfaces(iface, name, descriptor);
+                if (method != null) return method;
+            }
+            return null;
+
+        }
+
+        private static boolean checkMethod(Method method, String name, String descriptor) {
+            return Objects.equals(method.info.name, name) && Objects.equals(method.info.descriptor, descriptor);
         }
     }
 }
