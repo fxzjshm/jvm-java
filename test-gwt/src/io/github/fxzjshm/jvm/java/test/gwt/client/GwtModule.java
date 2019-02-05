@@ -4,14 +4,14 @@ import com.google.gwt.core.client.EntryPoint;
 
 import java.io.IOException;
 
-import io.github.fxzjshm.jvm.java.Main;
+import io.github.fxzjshm.jvm.java.TestMain;
 
 public class GwtModule implements EntryPoint{
 
     @Override
     public void onModuleLoad() {
         try {
-            Main.main(null);
+            TestMain.main(null);
         } catch (IOException ignored) {
         }
     }

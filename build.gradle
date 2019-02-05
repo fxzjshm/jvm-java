@@ -69,6 +69,7 @@ project(":test-main"){
     dependencies {
         compile project(":core")
         // testCompile project(":core")
+        compile "org.eclipse.jdt.core.compiler:ecj:$ecjVersion"
         testCompile "junit:junit:$junitVersion"
     }
 }

@@ -33,7 +33,7 @@ public class EmulatedClass extends Class {
 
         accessFlags = classFile.accessFlags;
 
-        // TODO Reflect.classMap.put(cf.name, this);
+        // TODO Reflect.classMap.put(cf.name, this) has done in DefaultClassLOader, is it correct?
 
         name = classFile.name;
         packageName = classFile.packageName;

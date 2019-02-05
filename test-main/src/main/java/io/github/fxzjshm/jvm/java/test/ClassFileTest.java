@@ -1,5 +1,7 @@
 package io.github.fxzjshm.jvm.java.test;
 
+import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -10,11 +12,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
-
-import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 
 import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
 import io.github.fxzjshm.jvm.java.classfile.ClassFile;
@@ -50,7 +47,7 @@ public class ClassFileTest {
         return set;
     }
 
-    @Before
+    // @Before
     public void compileClass() throws IOException {
         Set<File> classes = searchFile(new SuffixFilter("class"), dir);
         Map<String, File> name2file = new Hashtable<>(classes.size());
@@ -80,7 +77,7 @@ public class ClassFileTest {
         }
     }
 
-    @Test
+    // @Test
     public void parseClass() throws IOException {
         Set<File> classes = searchFile(new SuffixFilter("class"), dir);
         Set<File> clazzes = searchFile(new SuffixFilter("bytecode"), dir);
@@ -89,7 +86,7 @@ public class ClassFileTest {
             for (File classFile : classes) {
                 System.out.println("Testing " + classFile.getName());
                 ClassFile cf = new ClassFile(new ByteArrayReader(Files.readAllBytes(classFile.toPath())));
-                Assert.assertEquals(0, cf.reader.available());
+                TestHelper.assertEqual(0, cf.reader.available());
                 classMap.put(cf.name, cf);
             }
         }

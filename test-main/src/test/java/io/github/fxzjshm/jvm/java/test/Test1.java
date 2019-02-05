@@ -4,7 +4,7 @@ import org.junit.*;
 
 import java.io.IOException;
 
-import io.github.fxzjshm.jvm.java.Main;
+import io.github.fxzjshm.jvm.java.TestMain;
 
 public class Test1 {
 
@@ -18,6 +18,6 @@ public class Test1 {
 
     @Test
     public void testMain() throws IOException {
-        Main.main(null);
+        TestMain.main(null);
     }
 }

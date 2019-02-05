@@ -12,6 +12,7 @@ public class ExternalClass extends Class {
     public ExternalClass(ExternalClassLoader loader, java.lang.Class clazz) {
         accessFlags = clazz.getModifiers();
         this.loader = loader;
+        // TODO wrap other information
 
         name = jClass.getName();
         packageName = jClass.getPackage().getName();
