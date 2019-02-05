@@ -5,30 +5,27 @@ import java.io.IOException;
 import io.github.fxzjshm.jvm.java.api.ClassLoader;
 import io.github.fxzjshm.jvm.java.api.Classpath;
 import io.github.fxzjshm.jvm.java.api.Class;
-import io.github.fxzjshm.jvm.java.api.ReflectHelper;
+import io.github.fxzjshm.jvm.java.api.ExternalReflectHelper;
 import io.github.fxzjshm.jvm.java.runtime.VM;
 
-public class DefaultClassLoader implements ClassLoader {
-    private VM vm;
-    private EmuClassLoader emuClassLoader;
+public class DefaultClassLoader extends ClassLoader {
+    private EmulatedClassLoader emulatedClassLoader;
     private ExternalClassLoader externalClassLoader;
 
-    public DefaultClassLoader(VM vm, Classpath classpath, ReflectHelper helper) {
+    public DefaultClassLoader(VM vm, Classpath classpath, ExternalReflectHelper helper) {
         this.vm = vm;
-        emuClassLoader = new EmuClassLoader(vm, classpath);
+        emulatedClassLoader = new EmulatedClassLoader(vm, classpath);
         externalClassLoader = new ExternalClassLoader(vm, helper);
     }
 
     public Class loadClass(String name) throws IOException {
-        try {
-            return externalClassLoader.loadClass(name);
+        Class clazz;
+        try { // try to load external class first, TODO: check this
+            clazz = externalClassLoader.loadClass(name);
         } catch (Exception e) {
-            return emuClassLoader.loadClass(name);
+            clazz = emulatedClassLoader.loadClass(name);
         }
-    }
-
-    @Override
-    public VM vm() {
-        return vm;
+        vm.reflect.classMap.put(clazz.name, clazz);// TODO should this be moved to ClassLoader?
+        return clazz;
     }
 }

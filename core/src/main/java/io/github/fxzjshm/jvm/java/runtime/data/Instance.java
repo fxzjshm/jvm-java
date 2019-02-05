@@ -8,6 +8,6 @@ public class Instance {
 
     public Instance(Class clazz) {
         this.clazz = clazz;
-        data = new Object[clazz.instanceSlotCount];
+        data = new Object[((EmulatedClass)clazz).instanceSlotCount];
     }
 }

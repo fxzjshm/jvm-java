@@ -7,11 +7,15 @@ import io.github.fxzjshm.jvm.java.api.ClassLoader;
 import io.github.fxzjshm.jvm.java.classfile.ClassFile;
 import io.github.fxzjshm.jvm.java.classfile.MemberInfo;
 
-public class EmuClass extends Class {
+public class EmulatedClass extends Class {
 
     public ClassFile classFile;
+    public int instanceSlotCount;
+    public int staticSlotCount;
+    public Object[] staticVars;
+    public RuntimeConstantPool rtcp;
 
-    public EmuClass(ClassFile cf, ClassLoader cl) {
+    public EmulatedClass(ClassFile cf, ClassLoader cl) {
         loader = cl;
         classFile = cf;
 
@@ -30,31 +34,8 @@ public class EmuClass extends Class {
         accessFlags = classFile.accessFlags;
 
         // TODO Reflect.classMap.put(cf.name, this);
-    }
 
-    @Override
-    public boolean isSubClassOf(Class target) {
-        for (Class c = superClass; c != null; c = c.superClass) {
-            if (c == target) // TODO check here
-                return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isImplements(Class iface) {
-        for (Class c = this; c != null; c = c.superClass)
-            for (Class i : c.interfaces)
-                if (i == iface || i.isSubInterfaceOf(iface))
-                    return true;
-        return false;
-    }
-
-    @Override
-    public boolean isSubInterfaceOf(Class iface) {
-        for (Class superInterface : interfaces)
-            if (superInterface == iface || superInterface.isSubInterfaceOf(iface))
-                return true;
-        return false;
+        name = classFile.name;
+        packageName = classFile.packageName;
     }
 }

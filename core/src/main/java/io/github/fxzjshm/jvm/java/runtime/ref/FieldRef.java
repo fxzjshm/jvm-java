@@ -23,7 +23,7 @@ public class FieldRef extends MemberRef {
                 throw new NoSuchFieldError(name + " : " + descriptor);
             }
             if (!Bitmask.isAccessibleTo(d, c, field.info.accessFlags))
-                throw new IllegalAccessError("Cannot access " + c.classFile.name + "/" + field.info.name + " from " + d.classFile.name);
+                throw new IllegalAccessError("Cannot access " + c.name + "/" + field.info.name + " from " + d.name);
             this.field = field;
         }
         return this.field;

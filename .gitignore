@@ -34,3 +34,6 @@ test-gwt/war/WEB-INF/classes/
 gwt-unitCache/
 www-test/
 .gwt-tmp/
+
+# HotSpot VM crash files
+hs_err*

@@ -7,6 +7,7 @@ import java.util.Objects;
 import io.github.fxzjshm.jvm.java.api.Class;
 import io.github.fxzjshm.jvm.java.classfile.Bitmask;
 import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
+import io.github.fxzjshm.jvm.java.runtime.data.EmulatedClass;
 import io.github.fxzjshm.jvm.java.runtime.data.Field;
 import io.github.fxzjshm.jvm.java.runtime.data.Instance;
 import io.github.fxzjshm.jvm.java.runtime.data.Method;
@@ -37,8 +38,9 @@ public class Frame {
 
     /**
      * Do one step of bytecode.
+     * Warning: the method must be emulated
      */
-    public void exec() throws Throwable {
+    public void exec() {
         reader.setPos(nextPC);
         int code = reader.readUint8(), ret = 0;
         switch (code) {
@@ -80,11 +82,11 @@ public class Frame {
             case 0x14: // ldc2_w
                 //TODO impl
                 int index = (code == 0x12) ? reader.readUint8() : reader.readUint16();
-                Object c = method.clazz.rtcp.consts[index];
+                Object c = ((EmulatedClass) (method.clazz)).rtcp.consts[index];
                 if (c instanceof Integer || c instanceof Float || c instanceof Long || c instanceof Double || c instanceof String) {
                     operandStack.push(c);
                 }else if (c instanceof ClassRef) {
-                    operandStack.push(((ClassRef) c).resolvedClass().jClass);
+                    operandStack.push(((ClassRef) c).resolvedClass());// TODO ???
                 }else {
                     throw new UnsupportedOperationException("TODO: ldc"); // TODO: ldc
                 }
@@ -668,21 +670,21 @@ public class Frame {
             case 0xb2:// getstatic
             case 0xb3:// putstatic
                 index = reader.readUint16();
-                Field field = ((FieldRef) (method.clazz.rtcp.consts[index])).resolvedField();
+                Field field = ((FieldRef) (((EmulatedClass)method.clazz).rtcp.consts[index])).resolvedField();
                 if ((field.info.accessFlags & Bitmask.ACC_STATIC) == 0)
                     throw new IncompatibleClassChangeError(field.info.name + " is not a static field!");
                 switch (code) {
                     case 0xb2:// getstatic
-                        operandStack.push(field.clazz.staticVars[field.slotId]);
+                        operandStack.push(((EmulatedClass)field.clazz).staticVars[field.slotId]);
                         break;
                     case 0xb3:// putstatic
                         if ((field.info.accessFlags & Bitmask.ACC_FINAL) != 0) {
                             if (method.clazz != field.clazz || (!Objects.equals(method.info.name, "<clinit>")))
                                 throw new IllegalAccessError("Cannot init a final field "
                                         + field.info.name + " fron normal method "
-                                        + method.clazz.classFile.name + "/" + method.info.name);
+                                        + method.clazz.name + "/" + method.info.name);
                         }
-                        field.clazz.staticVars[field.slotId] = operandStack.pop();
+                        ((EmulatedClass)field.clazz).staticVars[field.slotId] = operandStack.pop();
                         break;
                     default:
                         break;
@@ -691,7 +693,7 @@ public class Frame {
             case 0xb4:// getfield
             case 0xb5:// putfield
                 index = reader.readUint16();
-                field = ((FieldRef) (method.clazz.rtcp.consts[index])).resolvedField();
+                field = ((FieldRef) (((EmulatedClass)method.clazz).rtcp.consts[index])).resolvedField();
                 if ((field.info.accessFlags & Bitmask.ACC_STATIC) != 0)
                     throw new IncompatibleClassChangeError(field.info.name + " is a static field!");
                 switch (code) {
@@ -704,7 +706,7 @@ public class Frame {
                             if (method.clazz != field.clazz || (!Objects.equals(method.info.name, "<init>")))
                                 throw new IllegalAccessError("Cannot init a final field "
                                         + field.info.name + " fron normal method "
-                                        + method.clazz.classFile.name + "/" + method.info.name);
+                                        + ((EmulatedClass)method.clazz).classFile.name + "/" + method.info.name);
                         }
                         Object val = operandStack.pop();
                         ref = (Instance) operandStack.pop();
@@ -732,12 +734,12 @@ public class Frame {
                 break;
             case 0xbb:// new
                 index = reader.readUint16();
-                RuntimeConstantPool rcp = method.clazz.rtcp;
+                RuntimeConstantPool rcp = ((EmulatedClass)method.clazz).rtcp;
                 ClassRef classRef = (ClassRef) (rcp.consts[index]);
                 Class clazz = classRef.resolvedClass();
-                if (((clazz.classFile.accessFlags & Bitmask.ACC_INTERFACE) != 0)
-                        || ((clazz.classFile.accessFlags & Bitmask.ACC_ABSTRACT) != 0))
-                    throw new InstantiationError("Cannot new " + clazz.classFile.name);
+                if (((clazz.accessFlags & Bitmask.ACC_INTERFACE) != 0)
+                        || ((clazz.accessFlags & Bitmask.ACC_ABSTRACT) != 0))
+                    throw new InstantiationError("Cannot new " + clazz.name);
                 Instance instance = new Instance(clazz);
                 operandStack.push(instance);
                 break;
@@ -759,9 +761,9 @@ public class Frame {
                 if (fieldRef == null)
                     break;
                 else {
-                    clazz = ((ClassRef) (method.clazz.rtcp.consts[index])).resolvedClass();
+                    clazz = ((ClassRef) (((EmulatedClass)method.clazz).rtcp.consts[index])).resolvedClass();
                     if (!fieldRef.isInstanceOf(clazz))
-                        throw new ClassCastException("Cannot cast " + fieldRef.className + " to " + clazz.classFile.name);
+                        throw new ClassCastException("Cannot cast " + fieldRef.className + " to " + clazz.name);
                 }
                 break;
             case 0xc1:// instanceof
@@ -770,7 +772,7 @@ public class Frame {
                 if (fieldRef == null)
                     operandStack.push(0);
                 else {
-                    clazz = ((ClassRef) (method.clazz.rtcp.consts[index])).resolvedClass();
+                    clazz = ((ClassRef) (((EmulatedClass)method.clazz).rtcp.consts[index])).resolvedClass();
                     operandStack.push((fieldRef.isInstanceOf(clazz)) ? 1 : 0);
                 }
                 break;

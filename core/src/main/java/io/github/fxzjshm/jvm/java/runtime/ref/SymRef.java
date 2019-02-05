@@ -25,8 +25,8 @@ public class SymRef {
     private void resolveClassRef(){
         try {
             Class d = rcp.clazz, c = d.loader.loadClass(className);
-            if (!Bitmask.isAccessibleTo(c, d, d.classFile.accessFlags))
-                throw new IllegalAccessError("Class " + c.classFile.name + " cannot access to class " + d.classFile.name + ".");
+            if (!Bitmask.isAccessibleTo(c, d, d.accessFlags))
+                throw new IllegalAccessError("Class " + c.name + " cannot access to class " + d.name + ".");
             clazz = c;
         } catch (IOException e) {
             throw new RuntimeException("Cannot load class " + className, e);

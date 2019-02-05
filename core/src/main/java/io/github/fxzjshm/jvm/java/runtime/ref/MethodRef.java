@@ -25,15 +25,15 @@ public class MethodRef extends MemberRef {
     private void resolveMethodRef() {
         Class d = rcp.clazz;
         Class c = resolvedClass();
-        if ((c.classFile.accessFlags & Bitmask.ACC_INTERFACE) != 0) {
-            throw new IncompatibleClassChangeError(c.classFile.name + " should not be an interface");
+        if ((c.accessFlags & Bitmask.ACC_INTERFACE) != 0) {
+            throw new IncompatibleClassChangeError(c.name + " should not be an interface");
         }
         Method method = MethodLookup.lookupMethod(c, name, descriptor);
         if (method == null) {
             throw new NoSuchMethodError("Cannot find " + className + '.' + name + '(' + descriptor + ')');
         }
         if (!Bitmask.isAccessibleTo(d, c, method.info.accessFlags)) {
-            throw new IllegalAccessError("Cannot access " + c.classFile.name + '.' + method.info.name + "from" + d.classFile.name);
+            throw new IllegalAccessError("Cannot access " + c.name + '.' + method.info.name + "from" + d.name);
         }
     }
 

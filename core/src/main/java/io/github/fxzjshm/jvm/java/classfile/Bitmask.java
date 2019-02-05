@@ -33,10 +33,10 @@ public abstract class Bitmask {
     public static boolean isAccessibleTo(Class origin, Class target, int targetAccessFlag) {
         if ((targetAccessFlag & ACC_PUBLIC) != 0) return true;
         else if ((targetAccessFlag & ACC_PROTECTED) != 0) {
-            return origin.isSubClassOf(target) || (Objects.equals(origin.classFile.packageName, target.classFile.packageName));
+            return origin.isSubClassOf(target) || (Objects.equals(origin.packageName, target.packageName));
         } else if ((targetAccessFlag & ACC_PRIVATE) != 0) return origin == target;
         else /* (default) */
-            return Objects.equals(origin.classFile.packageName, target.classFile.packageName);
+            return Objects.equals(origin.packageName, target.packageName);
     }
 
 }

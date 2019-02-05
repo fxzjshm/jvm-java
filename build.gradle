@@ -8,7 +8,7 @@ buildscript {
     }
     dependencies {
         classpath 'org.wisepersist:gwt-gradle-plugin:1.0.1'
-        classpath "com.jtransc:jtransc-gradle-plugin:0.6.7"
+        classpath "com.jtransc:jtransc-gradle-plugin:0.6.8"
         classpath "org.akhikhl.gretty:gretty:2.0.0"
     }
 }
@@ -17,7 +17,7 @@ allprojects{
     apply plugin: 'eclipse'
     apply plugin: 'idea'
     ext {
-        gdxVersion = '1.9.8'
+        gdxVersion = '1.9.9'
         junitVersion = '4.10'
         ecjVersion = '4.6.1'
         gwtVersion = '2.8.0'
