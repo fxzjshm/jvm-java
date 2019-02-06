@@ -2,13 +2,13 @@ package io.github.fxzjshm.jvm.java.loader;
 
 import java.io.IOException;
 
-import io.github.fxzjshm.jvm.java.api.ClassLoader;
-import io.github.fxzjshm.jvm.java.api.Class;
+import io.github.fxzjshm.jvm.java.api.VClassLoader;
+import io.github.fxzjshm.jvm.java.api.VClass;
 import io.github.fxzjshm.jvm.java.api.ExternalReflectHelper;
 import io.github.fxzjshm.jvm.java.runtime.VM;
 import io.github.fxzjshm.jvm.java.runtime.data.ExternalClass;
 
-public class ExternalClassLoader extends ClassLoader { //TODO impl
+public class ExternalClassLoader extends VClassLoader { //TODO impl
     ExternalReflectHelper helper;
 
     ExternalClassLoader(VM vm,ExternalReflectHelper reflectHelper) {
@@ -17,7 +17,7 @@ public class ExternalClassLoader extends ClassLoader { //TODO impl
     }
 
     @Override
-    public Class loadClass(String name) throws IOException {
+    public VClass loadClass(String name) throws IOException {
         return new ExternalClass(this,helper.Class_forName(name));
     }
 }

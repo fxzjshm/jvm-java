@@ -8,15 +8,15 @@ import io.github.fxzjshm.jvm.java.runtime.VM;
 import io.github.fxzjshm.jvm.java.runtime.data.EmulatedClass;
 import io.github.fxzjshm.jvm.java.runtime.data.ExternalClass;
 
-public abstract class ClassLoader {
+public abstract class VClassLoader {
     public VM vm;
 
     /**
      * Load the class by its name.
      * @see DefaultClassLoader for default implement
      * @param name the name of the class to be loaded,
-     * @return loaded {@link Class}, either {@link EmulatedClass} or {@link ExternalClass} (currently)
+     * @return loaded {@link VClass}, either {@link EmulatedClass} or {@link ExternalClass} (currently)
      * @throws IOException for {@link EmulatedClass} because it uses {@link ByteArrayReader} which requires it
      */
-    public abstract Class loadClass(String name) throws IOException;
+    public abstract VClass loadClass(String name) throws IOException;
 }

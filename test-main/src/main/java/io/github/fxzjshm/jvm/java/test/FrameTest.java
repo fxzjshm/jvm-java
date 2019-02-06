@@ -3,12 +3,13 @@ package io.github.fxzjshm.jvm.java.test;
 import java.io.IOException;
 import java.util.Objects;
 
+import io.github.fxzjshm.jvm.java.api.VMethod;
 import io.github.fxzjshm.jvm.java.classfile.ClassFile;
 import io.github.fxzjshm.jvm.java.classfile.MemberInfo;
-import io.github.fxzjshm.jvm.java.runtime.Frame;
+import io.github.fxzjshm.jvm.java.runtime.EmulatedFrame;
 import io.github.fxzjshm.jvm.java.runtime.Thread;
 import io.github.fxzjshm.jvm.java.runtime.VM;
-import io.github.fxzjshm.jvm.java.runtime.data.Method;
+import io.github.fxzjshm.jvm.java.runtime.data.EmulatedMethod;
 
 
 public class FrameTest {
@@ -29,8 +30,8 @@ public class FrameTest {
         if(cf != null) {
             for (MemberInfo methodInfo : cf.methods) {
                 if (Objects.equals(methodInfo.name, "Gauss.main")) {
-                    Method method = new Method(methodInfo, null);
-                    Frame frame = new Frame(new Thread(vm), method);
+                	EmulatedMethod method = new EmulatedMethod(methodInfo, null);
+                    EmulatedFrame frame = new EmulatedFrame(new Thread(vm), method);
                     while (frame.reader.available() != 0) frame.exec();
                     TestHelper.assertEqual(5050,frame.localVars.get(1));
                 }

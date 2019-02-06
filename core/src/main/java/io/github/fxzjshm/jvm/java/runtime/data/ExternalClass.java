@@ -2,14 +2,15 @@ package io.github.fxzjshm.jvm.java.runtime.data;
 
 import java.util.Map;
 
-import io.github.fxzjshm.jvm.java.api.Class;
+import io.github.fxzjshm.jvm.java.api.VClass;
 import io.github.fxzjshm.jvm.java.loader.ExternalClassLoader;
 
-public class ExternalClass extends Class {
+public class ExternalClass extends VClass {
 
-    public java.lang.Class jClass; // TODO impl
+    @SuppressWarnings("rawtypes")
+	public Class jClass; // TODO impl
 
-    public ExternalClass(ExternalClassLoader loader, java.lang.Class clazz) {
+    public ExternalClass(ExternalClassLoader loader, @SuppressWarnings("rawtypes") Class clazz) {
         accessFlags = clazz.getModifiers();
         this.loader = loader;
         // TODO wrap other information
@@ -21,17 +22,19 @@ public class ExternalClass extends Class {
     }
 
     @Override
-    public boolean isSubClassOf(Class target) { // TODO check this
-        Map<String, Class> classMap = loader.vm.reflect.classMap;
-        for (java.lang.Class clazz = jClass.getSuperclass(); clazz != null; clazz = clazz.getSuperclass()) {
+    public boolean isSubClassOf(VClass target) { // TODO check this
+        Map<String, VClass> classMap = loader.vm.reflect.classMap;
+        for (@SuppressWarnings("rawtypes")
+		Class clazz = jClass.getSuperclass(); clazz != null; clazz = clazz.getSuperclass()) {
             if (classMap.get(clazz.getName()) == target)
                 return true; // require each class is mapped when it is loaded
         }
         return false;
     }
 
-    @Override
-    public boolean isAssignableFrom(Class other) {
+    @SuppressWarnings("unchecked")
+	@Override
+    public boolean isAssignableFrom(VClass other) {
         if (other instanceof ExternalClass)
             return jClass.isAssignableFrom(((ExternalClass) other).jClass);// Quick way
         else return super.isAssignableFrom(other);// Should be enough. See below.

@@ -1,6 +1,6 @@
 package io.github.fxzjshm.jvm.java.runtime.data;
 
-import io.github.fxzjshm.jvm.java.api.Class;
+import io.github.fxzjshm.jvm.java.api.VClass;
 import io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool;
 import io.github.fxzjshm.jvm.java.classfile.cp.MemberRefInfo;
 import io.github.fxzjshm.jvm.java.runtime.ref.InterfaceMethodRef;
@@ -11,10 +11,10 @@ import io.github.fxzjshm.jvm.java.runtime.ref.MethodRef;
 import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.*;
 
 public class RuntimeConstantPool {
-    public Class clazz;
+    public VClass clazz;
     public Object[] consts;
 
-    public RuntimeConstantPool(Class clazz, ConstantPool cp) {
+    public RuntimeConstantPool(VClass clazz, ConstantPool cp) {
         this.clazz = clazz;
         consts = new Object[cp.infos.length];
         for (int i = 0; i < cp.infos.length; i++) {

@@ -4,18 +4,18 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import io.github.fxzjshm.jvm.java.api.Class;
+import io.github.fxzjshm.jvm.java.api.VClass;
 import io.github.fxzjshm.jvm.java.classfile.Bitmask;
 import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
 import io.github.fxzjshm.jvm.java.runtime.data.EmulatedClass;
-import io.github.fxzjshm.jvm.java.runtime.data.Field;
+import io.github.fxzjshm.jvm.java.runtime.data.EmulatedField;
+import io.github.fxzjshm.jvm.java.runtime.data.EmulatedMethod;
 import io.github.fxzjshm.jvm.java.runtime.data.Instance;
-import io.github.fxzjshm.jvm.java.runtime.data.Method;
 import io.github.fxzjshm.jvm.java.runtime.data.RuntimeConstantPool;
 import io.github.fxzjshm.jvm.java.runtime.ref.ClassRef;
 import io.github.fxzjshm.jvm.java.runtime.ref.FieldRef;
 
-public class Frame {
+public class EmulatedFrame {
     public Map<Integer, Object> localVars = new LinkedHashMap<>();
     private OperandStack<Object> operandStack = new OperandStack<>();
     private int nextPC;
@@ -23,10 +23,10 @@ public class Frame {
      * Refers to the thread that contains this frame.
      */
     public Thread thread;
-    private Method method;
+    private EmulatedMethod method;
     public ByteArrayReader reader;
 
-    public Frame(Thread thread, Method method) {
+    public EmulatedFrame(Thread thread, EmulatedMethod method) {
         this.thread = thread;
         this.method = method;
         reader = new ByteArrayReader(method.code);
@@ -670,7 +670,8 @@ public class Frame {
             case 0xb2:// getstatic
             case 0xb3:// putstatic
                 index = reader.readUint16();
-                Field field = ((FieldRef) (((EmulatedClass)method.clazz).rtcp.consts[index])).resolvedField();
+                // TODO check this if there is ExternalField to be referenced.
+                EmulatedField field = (EmulatedField) ((FieldRef) (((EmulatedClass)method.clazz).rtcp.consts[index])).resolvedField();
                 if ((field.info.accessFlags & Bitmask.ACC_STATIC) == 0)
                     throw new IncompatibleClassChangeError(field.info.name + " is not a static field!");
                 switch (code) {
@@ -693,7 +694,7 @@ public class Frame {
             case 0xb4:// getfield
             case 0xb5:// putfield
                 index = reader.readUint16();
-                field = ((FieldRef) (((EmulatedClass)method.clazz).rtcp.consts[index])).resolvedField();
+                field = (EmulatedField) ((FieldRef) (((EmulatedClass)method.clazz).rtcp.consts[index])).resolvedField();
                 if ((field.info.accessFlags & Bitmask.ACC_STATIC) != 0)
                     throw new IncompatibleClassChangeError(field.info.name + " is a static field!");
                 switch (code) {
@@ -736,7 +737,7 @@ public class Frame {
                 index = reader.readUint16();
                 RuntimeConstantPool rcp = ((EmulatedClass)method.clazz).rtcp;
                 ClassRef classRef = (ClassRef) (rcp.consts[index]);
-                Class clazz = classRef.resolvedClass();
+                VClass clazz = classRef.resolvedClass();
                 if (((clazz.accessFlags & Bitmask.ACC_INTERFACE) != 0)
                         || ((clazz.accessFlags & Bitmask.ACC_ABSTRACT) != 0))
                     throw new InstantiationError("Cannot new " + clazz.name);

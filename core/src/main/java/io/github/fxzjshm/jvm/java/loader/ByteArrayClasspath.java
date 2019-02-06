@@ -3,9 +3,9 @@ package io.github.fxzjshm.jvm.java.loader;
 import java.util.Hashtable;
 import java.util.Map;
 
-import io.github.fxzjshm.jvm.java.api.Classpath;
+import io.github.fxzjshm.jvm.java.api.VClasspath;
 
-public class ByteArrayClasspath implements Classpath {
+public class ByteArrayClasspath implements VClasspath {
     public Map<String, byte[]> map = new Hashtable<>();
 
     @Override

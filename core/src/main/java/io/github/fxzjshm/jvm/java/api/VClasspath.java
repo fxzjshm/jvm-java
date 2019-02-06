@@ -1,5 +1,5 @@
 package io.github.fxzjshm.jvm.java.api;
 
-public interface Classpath {
+public interface VClasspath {
     byte[] readClass(String name);
 }

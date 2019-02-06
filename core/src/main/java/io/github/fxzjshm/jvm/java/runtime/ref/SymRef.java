@@ -2,20 +2,20 @@ package io.github.fxzjshm.jvm.java.runtime.ref;
 
 import java.io.IOException;
 
-import io.github.fxzjshm.jvm.java.api.Class;
+import io.github.fxzjshm.jvm.java.api.VClass;
 import io.github.fxzjshm.jvm.java.classfile.Bitmask;
 import io.github.fxzjshm.jvm.java.runtime.data.RuntimeConstantPool;
 
 public class SymRef {
     public RuntimeConstantPool rcp;
     public String className;
-    public Class clazz;
+    public VClass clazz;
 
     public SymRef(RuntimeConstantPool cp) {
         this.rcp = cp;
     }
 
-    public Class resolvedClass() {
+    public VClass resolvedClass() {
         if (clazz == null) {
             resolveClassRef();
         }
@@ -24,7 +24,7 @@ public class SymRef {
 
     private void resolveClassRef(){
         try {
-            Class d = rcp.clazz, c = d.loader.loadClass(className);
+            VClass d = rcp.clazz, c = d.loader.loadClass(className);
             if (!Bitmask.isAccessibleTo(c, d, d.accessFlags))
                 throw new IllegalAccessError("Class " + c.name + " cannot access to class " + d.name + ".");
             clazz = c;

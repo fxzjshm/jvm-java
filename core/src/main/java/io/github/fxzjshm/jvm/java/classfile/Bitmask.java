@@ -2,7 +2,7 @@ package io.github.fxzjshm.jvm.java.classfile;
 
 import java.util.Objects;
 
-import io.github.fxzjshm.jvm.java.api.Class;
+import io.github.fxzjshm.jvm.java.api.VClass;
 
 /**
  * Bit masks for reading access flags. e.g isPublic = accessFlags | ACC_PUBLIC;
@@ -28,9 +28,9 @@ public abstract class Bitmask {
             ACC_ENUM = 0x4000;
 
     /**
-     * @param target {@link Class} of the object to be accessed.
+     * @param target {@link VClass} of the object to be accessed.
      */
-    public static boolean isAccessibleTo(Class origin, Class target, int targetAccessFlag) {
+    public static boolean isAccessibleTo(VClass origin, VClass target, int targetAccessFlag) {
         if ((targetAccessFlag & ACC_PUBLIC) != 0) return true;
         else if ((targetAccessFlag & ACC_PROTECTED) != 0) {
             return origin.isSubClassOf(target) || (Objects.equals(origin.packageName, target.packageName));

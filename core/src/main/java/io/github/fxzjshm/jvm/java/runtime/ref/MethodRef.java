@@ -2,20 +2,20 @@ package io.github.fxzjshm.jvm.java.runtime.ref;
 
 import java.util.Objects;
 
-import io.github.fxzjshm.jvm.java.api.Class;
+import io.github.fxzjshm.jvm.java.api.VMethod;
+import io.github.fxzjshm.jvm.java.api.VClass;
 import io.github.fxzjshm.jvm.java.classfile.Bitmask;
 import io.github.fxzjshm.jvm.java.classfile.cp.MemberRefInfo;
-import io.github.fxzjshm.jvm.java.runtime.data.Method;
 import io.github.fxzjshm.jvm.java.runtime.data.RuntimeConstantPool;
 
 public class MethodRef extends MemberRef {
-    private Method method = null;
+    private VMethod method = null;
 
     public MethodRef(RuntimeConstantPool rcp, MemberRefInfo info) {
         super(rcp, info);
     }
 
-    public Method resolvedMethod() {
+    public VMethod resolvedMethod() {
         if (method == null) {
             resolveMethodRef();
         }
@@ -23,23 +23,23 @@ public class MethodRef extends MemberRef {
     }
 
     private void resolveMethodRef() {
-        Class d = rcp.clazz;
-        Class c = resolvedClass();
+        VClass d = rcp.clazz;
+        VClass c = resolvedClass();
         if ((c.accessFlags & Bitmask.ACC_INTERFACE) != 0) {
             throw new IncompatibleClassChangeError(c.name + " should not be an interface");
         }
-        Method method = MethodLookup.lookupMethod(c, name, descriptor);
+        VMethod method = MethodLookup.lookupMethod(c, name, descriptor);
         if (method == null) {
             throw new NoSuchMethodError("Cannot find " + className + '.' + name + '(' + descriptor + ')');
         }
-        if (!Bitmask.isAccessibleTo(d, c, method.info.accessFlags)) {
-            throw new IllegalAccessError("Cannot access " + c.name + '.' + method.info.name + "from" + d.name);
+        if (!Bitmask.isAccessibleTo(d, c, method.accessFlags())) {
+            throw new IllegalAccessError("Cannot access " + c.name + '.' + method.name() + "from" + d.name);
         }
     }
 
     private static class MethodLookup {
-        private static Method lookupMethod(Class clazz, String name, String descriptor) {
-            Method method = lookupMethodInClass(clazz, name, descriptor);
+        private static VMethod lookupMethod(VClass clazz, String name, String descriptor) {
+            VMethod method = lookupMethodInClass(clazz, name, descriptor);
             if (method == null) {
                 return lookupMethodInInterfaces(clazz, name, descriptor);
             } else {
@@ -47,9 +47,9 @@ public class MethodRef extends MemberRef {
             }
         }
 
-        private static Method lookupMethodInClass(Class clazz, String name, String descriptor) {
-            for (Class c = clazz; c != null; c = c.superClass) {
-                for (Method method : c.methods) {
+        private static VMethod lookupMethodInClass(VClass clazz, String name, String descriptor) {
+            for (VClass c = clazz; c != null; c = c.superClass) {
+                for (VMethod method : c.methods) {
                     if (checkMethod(method, name, descriptor)) {
                         return method;
                     }
@@ -58,22 +58,22 @@ public class MethodRef extends MemberRef {
             return null;
         }
 
-        private static Method lookupMethodInInterfaces(Class clazz, String name, String descriptor) {
-            for (Class iface : clazz.interfaces) {
-                for (Method method : iface.methods) {
+        private static VMethod lookupMethodInInterfaces(VClass clazz, String name, String descriptor) {
+            for (VClass iface : clazz.interfaces) {
+                for (VMethod method : iface.methods) {
                     if (checkMethod(method, name, descriptor)) {
                         return method;
                     }
                 }
-                Method method = lookupMethodInInterfaces(iface, name, descriptor);
+                VMethod method = lookupMethodInInterfaces(iface, name, descriptor);
                 if (method != null) return method;
             }
             return null;
 
         }
 
-        private static boolean checkMethod(Method method, String name, String descriptor) {
-            return Objects.equals(method.info.name, name) && Objects.equals(method.info.descriptor, descriptor);
+        private static boolean checkMethod(VMethod method, String name, String descriptor) {
+            return Objects.equals(method.name(), name) && Objects.equals(method.descriptor(), descriptor);
         }
     }
 }
