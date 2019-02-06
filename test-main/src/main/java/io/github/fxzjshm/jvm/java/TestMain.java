@@ -1,6 +1,5 @@
 package io.github.fxzjshm.jvm.java;
 
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
@@ -12,7 +11,7 @@ import io.github.fxzjshm.jvm.java.test.HelloWorldTest;
 import io.github.fxzjshm.jvm.java.test.TestRunnable;
 import io.github.fxzjshm.jvm.java.test.TestWrapper;
 
-public class TestMain {
+public abstract class TestMain {
     public static Map<TestWrapper, Boolean> isAvaliable;
     public static boolean isSuccess;
 
@@ -23,10 +22,10 @@ public class TestMain {
         before();
         test();
         after();
-        if (!isSuccess) throw new RuntimeException("Tesr failed. See above.");
+        if (!isSuccess) throw new RuntimeException("Test failed. See above.");
     }
 
-    // To avoid issues with static initalizers, use this.
+    // To avoid issues with static initializers, use this.
     private static void init() {
 
         ByteArrayReaderTest byteArrayReaderTest = new ByteArrayReaderTest();
@@ -63,7 +62,7 @@ public class TestMain {
                 }
             } catch (Throwable throwable) {
                 isAvaliable.replace(entry.getKey(), false); // ignore this test.
-                // TODO check whether System.err is always avaliable.
+                // TODO check whether System.err is always available.
                 throwable.printStackTrace();
 
                 // clean up

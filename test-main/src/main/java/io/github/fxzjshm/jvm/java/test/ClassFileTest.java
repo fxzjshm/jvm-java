@@ -23,11 +23,11 @@ import io.github.fxzjshm.jvm.java.classfile.ClassFile;
  */
 public class ClassFileTest {
 
-    public static File dir = new File("core/src/test/resources");
+    public static File dir = new File("../core/src/test/resources");
     public static Map<String, ClassFile> classMap = new Hashtable<>();
 
     public static Set<File> searchFile(FilenameFilter filter, File dir) {
-        // System.out.println("Searching java file in: "+dir.getAbsolutePath());
+        System.out.println("Searching java file in: "+dir.getAbsolutePath());
         Set<File> set = new HashSet<>();
         File[] files = dir.listFiles(filter);
         if (files != null) {

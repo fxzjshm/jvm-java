@@ -81,6 +81,8 @@ project(":test-gwt"){
     dependencies {
         compile project(":support-libgdx")
         compile project(":test-main")
+        compile "com.google.gwt:gwt-user:$gwtVersion"
+        compile "com.google.gwt:gwt-user:$gwtVersion:sources"
         compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
