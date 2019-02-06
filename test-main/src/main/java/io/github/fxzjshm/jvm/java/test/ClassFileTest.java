@@ -50,16 +50,16 @@ public class ClassFileTest {
     // @Before
     public void compileClass() throws IOException {
         Set<File> classes = searchFile(new SuffixFilter("class"), dir);
-        Map<String, File> name2file = new Hashtable<>(classes.size());
+        Map<String, File> path2file = new Hashtable<>(classes.size());
         for (File classFile : classes) {
-            name2file.put(classFile.getAbsolutePath(), classFile);
+        	path2file.put(classFile.getAbsolutePath(), classFile);
         }
         Set<File> srcs = searchFile(new SuffixFilter("java"), dir);
         StringBuilder names = new StringBuilder(), paths = new StringBuilder();
         for (File src : srcs) {
             String classLocation = src.getAbsolutePath().substring(0, src.getAbsolutePath().length() - "java".length()) + "class";
-            if (name2file.containsKey(classLocation)) {
-                if (name2file.get(classLocation).lastModified() > src.lastModified()) {
+            if (path2file.containsKey(classLocation)) {
+                if (path2file.get(classLocation).lastModified() > src.lastModified()) {
                     System.out.println("Cached: " + src.getName());
                     continue;
                 }
@@ -84,7 +84,7 @@ public class ClassFileTest {
         classes.addAll(clazzes);
         if (classes != null) {
             for (File classFile : classes) {
-                System.out.println("Testing " + classFile.getName());
+                System.out.println("Test parsing " + classFile.getName());
                 ClassFile cf = new ClassFile(new ByteArrayReader(Files.readAllBytes(classFile.toPath())));
                 TestHelper.assertEqual(0, cf.reader.available());
                 classMap.put(cf.name, cf);
