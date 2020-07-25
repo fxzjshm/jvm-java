@@ -11,9 +11,12 @@ import io.github.fxzjshm.jvm.java.test.HelloWorldTest;
 import io.github.fxzjshm.jvm.java.test.TestRunnable;
 import io.github.fxzjshm.jvm.java.test.TestWrapper;
 
-public abstract class TestMain {
+public class TestMain {
     public static Map<TestWrapper, Boolean> isAvaliable;
     public static boolean isSuccess;
+
+    private TestMain() {
+    }
 
     public static void main(String[] args) {
         isAvaliable = new Hashtable<>();
@@ -37,7 +40,6 @@ public abstract class TestMain {
 
         ClassFileTest classFileTest = new ClassFileTest();
         TestWrapper classFileTestWrapper = new TestWrapper();
-        classFileTestWrapper.beforeFunctions.add(classFileTest::compileClass);
         classFileTestWrapper.testFunctions.add(classFileTest::parseClass);
         isAvaliable.put(classFileTestWrapper, true);
 

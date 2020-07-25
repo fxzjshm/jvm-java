@@ -15,9 +15,8 @@ public class FrameTest {
 
     // @Before
     public void init() throws IOException {
-        if (ClassFileTest.classMap.isEmpty()){
-            ClassFileTest cft=new ClassFileTest();
-            cft.compileClass();
+        if (ClassFileTest.classMap.isEmpty()) {
+            ClassFileTest cft = new ClassFileTest();
             cft.parseClass();
         }
     }

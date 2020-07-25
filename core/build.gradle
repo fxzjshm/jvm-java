@@ -1,2 +1,52 @@
+import org.eclipse.jdt.core.compiler.batch.BatchCompiler
+
+import java.nio.file.FileVisitResult
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.SimpleFileVisitor
+import java.nio.file.attribute.BasicFileAttributes
+
 sourceCompatibility = '1.7'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+task compileClassInResources() {
+    doLast {
+        File resourcesDir;
+        final LinkedHashMap<File, File> files = new LinkedHashMap<>()
+        if (file(".").absolutePath.endsWith("core")) {
+            resourcesDir = file("src/test/resources")
+        } else {
+            resourcesDir = file("core/src/test/resources")
+        }
+        Files.walkFileTree(resourcesDir.toPath(), new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
+                super.visitFile(path, attrs);
+                if (path.toString().toLowerCase().endsWith(".java")) {
+                    File javaFile = new File(path.toUri());
+                    String javaFileName=javaFile.getName();
+                    File classFile = new File(javaFile.getParent() + "/" + javaFileName.substring(0,javaFileName.lastIndexOf('.')) + ".class");
+                    // println javaFile
+                    // println classFile
+                    if (!(classFile.exists() && (classFile.lastModified() > javaFile.lastModified()))) {
+                        files.put(javaFile, classFile);
+                    }
+                }
+                return FileVisitResult.CONTINUE;
+            }
+        });
+        // println files
+        if(files.size()>0) {
+            StringBuilder paths = new StringBuilder();
+            for (File file : files.keySet()) {
+                paths.append(" ").append(file.absolutePath);
+            }
+            BatchCompiler.compile(
+                    "-classpath rt.jar -g -warn:-unused -noExit -1.8 " + paths.toString() + " -d " + resourcesDir.getAbsolutePath(),
+                    new PrintWriter(System.out),
+                    new PrintWriter(System.err), null);
+        }
+    }
+}
+
+compileJava.dependsOn compileClassInResources
