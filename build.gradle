@@ -1,15 +1,20 @@
 buildscript {
     repositories {
         mavenLocal()
-        mavenCentral()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        if(System.getProperty("user.country").equals("CN")){
+            maven { url "https://maven.aliyun.com/repository/central/" }
+            maven { url "https://maven.aliyun.com/repository/google" }
+        }else{
+            mavenCentral()
+            google()
+        }
         jcenter()
     }
     dependencies {
-        classpath 'org.wisepersist:gwt-gradle-plugin:1.0.1'
+        classpath 'org.wisepersist:gwt-gradle-plugin:1.0.13'
         classpath "com.jtransc:jtransc-gradle-plugin:0.6.8"
-        classpath "org.akhikhl.gretty:gretty:2.0.0"
+        classpath "org.akhikhl.gretty:gretty:+"
+        classpath "org.eclipse.jdt.core.compiler:ecj:4.6.1"
     }
 }
 
@@ -17,18 +22,21 @@ allprojects{
     apply plugin: 'eclipse'
     apply plugin: 'idea'
     ext {
-        gdxVersion = '1.9.9'
-        junitVersion = '4.10'
-        ecjVersion = '4.6.1'
-        gwtVersion = '2.8.0'
+        gdxVersion = '1.9.10'
+        junitVersion = '+'
+        gwtVersion = '2.9.0'
         mainClass = 'io.github.fxzjshm.jvm.java.Main'
         mainClassName = mainClass
     }
     repositories {
         mavenLocal()
-        mavenCentral()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        if(System.getProperty("user.country").equals("CN")){
+            maven { url "https://maven.aliyun.com/repository/central/" }
+            maven { url "https://maven.aliyun.com/repository/google" }
+        }else{
+            mavenCentral()
+            google()
+        }
         jcenter()
     }
 }
@@ -36,10 +44,6 @@ allprojects{
 project(":core"){
 	apply from: '../includeCommon.gradle'
     apply plugin: 'java'
-    dependencies {
-        testCompile "junit:junit:$junitVersion"
-        testCompile "org.eclipse.jdt.core.compiler:ecj:$ecjVersion"
-    }
     jar {
         manifest {
             attributes("Main-Class": project.ext.mainClass)
@@ -65,12 +69,10 @@ project(":support-libgdx"){
 }
 
 project(":test-main"){
+    apply from: '../includeCommon.gradle'
     apply plugin: 'java'
     dependencies {
         compile project(":core")
-        // testCompile project(":core")
-        compile "org.eclipse.jdt.core.compiler:ecj:$ecjVersion"
-        testCompile "junit:junit:$junitVersion"
     }
 }
 
