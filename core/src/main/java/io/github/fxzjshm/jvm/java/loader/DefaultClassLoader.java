@@ -6,13 +6,13 @@ import io.github.fxzjshm.jvm.java.api.VClassLoader;
 import io.github.fxzjshm.jvm.java.api.VClasspath;
 import io.github.fxzjshm.jvm.java.api.VClass;
 import io.github.fxzjshm.jvm.java.api.ExternalReflectHelper;
-import io.github.fxzjshm.jvm.java.runtime.VM;
+import io.github.fxzjshm.jvm.java.runtime.VirtualMachine;
 
 public class DefaultClassLoader extends VClassLoader {
     private EmulatedClassLoader emulatedClassLoader;
     private ExternalClassLoader externalClassLoader;
 
-    public DefaultClassLoader(VM vm, VClasspath classpath, ExternalReflectHelper helper) {
+    public DefaultClassLoader(VirtualMachine vm, VClasspath classpath, ExternalReflectHelper helper) {
         this.vm = vm;
         emulatedClassLoader = new EmulatedClassLoader(vm, classpath);
         externalClassLoader = new ExternalClassLoader(vm, helper);

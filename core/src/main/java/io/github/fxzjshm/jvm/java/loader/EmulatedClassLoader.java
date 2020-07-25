@@ -12,7 +12,7 @@ import io.github.fxzjshm.jvm.java.api.VClass;
 import io.github.fxzjshm.jvm.java.classfile.Bitmask;
 import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
 import io.github.fxzjshm.jvm.java.classfile.ClassFile;
-import io.github.fxzjshm.jvm.java.runtime.VM;
+import io.github.fxzjshm.jvm.java.runtime.VirtualMachine;
 import io.github.fxzjshm.jvm.java.runtime.data.EmulatedClass;
 import io.github.fxzjshm.jvm.java.runtime.data.EmulatedField;
 
@@ -20,7 +20,7 @@ class EmulatedClassLoader extends VClassLoader {
 	public Map<String, VClass> map = new Hashtable<>();
 	public VClasspath classpath;
 
-	public EmulatedClassLoader(VM vm, VClasspath classpath) {
+	public EmulatedClassLoader(VirtualMachine vm, VClasspath classpath) {
 		this.vm = vm;
 		this.classpath = classpath;
 	}

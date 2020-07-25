@@ -2,12 +2,18 @@ package io.github.fxzjshm.jvm.java.runtime;
 
 import java.util.Stack;
 
-public class Thread {
-    public VM vm;
-    public Stack<EmulatedFrame> stack;
+import io.github.fxzjshm.jvm.java.api.VFrame;
 
-    public Thread(VM vm) {
+public class Thread {
+    public VirtualMachine vm;
+    public Stack<VFrame> stack;
+
+    public Thread(VirtualMachine vm) {
         this.vm = vm;
         stack = new Stack<>();
+    }
+
+    public VFrame currentFrame(){
+        return stack.peek();
     }
 }

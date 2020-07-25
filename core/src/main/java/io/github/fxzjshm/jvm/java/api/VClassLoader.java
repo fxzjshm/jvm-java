@@ -4,12 +4,12 @@ import java.io.IOException;
 
 import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
 import io.github.fxzjshm.jvm.java.loader.DefaultClassLoader;
-import io.github.fxzjshm.jvm.java.runtime.VM;
+import io.github.fxzjshm.jvm.java.runtime.VirtualMachine;
 import io.github.fxzjshm.jvm.java.runtime.data.EmulatedClass;
 import io.github.fxzjshm.jvm.java.runtime.data.ExternalClass;
 
 public abstract class VClassLoader {
-    public VM vm;
+    public VirtualMachine vm;
 
     /**
      * Load the class by its name.
