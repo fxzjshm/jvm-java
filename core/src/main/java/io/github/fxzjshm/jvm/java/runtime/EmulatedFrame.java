@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import io.github.fxzjshm.jvm.java.api.VClass;
+import io.github.fxzjshm.jvm.java.api.VFrame;
 import io.github.fxzjshm.jvm.java.classfile.Bitmask;
 import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
 import io.github.fxzjshm.jvm.java.runtime.data.EmulatedClass;
@@ -15,7 +16,7 @@ import io.github.fxzjshm.jvm.java.runtime.data.RuntimeConstantPool;
 import io.github.fxzjshm.jvm.java.runtime.ref.ClassRef;
 import io.github.fxzjshm.jvm.java.runtime.ref.FieldRef;
 
-public class EmulatedFrame {
+public class EmulatedFrame extends VFrame {
     public Map<Integer, Object> localVars = new LinkedHashMap<>();
     private OperandStack<Object> operandStack = new OperandStack<>();
     private int nextPC;
@@ -612,16 +613,18 @@ public class EmulatedFrame {
                     address = reader.readInt16();
                     branch(address);
                     operandStack.push(reader.getPos() + 3);
-                } else
-                    throw new RuntimeException("JSR is just like tan(PI/2) when class file version is"
+                } else {
+                    throw new RuntimeException("JSR shouldn't appear when class file version is"
                             + method.info.classFile.major + "." + method.info.classFile.minor);
+                }
                 break;
             case 0xa9:// ret
                 if (method.info.classFile.major <= 49) {
                     branch((Integer) localVars.get(reader.readUint8()));
-                } else
-                    throw new RuntimeException("RET is just like tan(PI/2) when class file version is"
+                } else {
+                    throw new RuntimeException("RET shouldn't appear when class file version is"
                             + method.info.classFile.major + "." + method.info.classFile.minor);
+                }
                 break;
             case 0xaa:// tableswitch
                 reader.skipPadding();
