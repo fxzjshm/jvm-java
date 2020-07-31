@@ -1,26 +1,26 @@
 /*
- * Copyright (c) 1994, 2016, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ * Copyright (c) 1994, 2013, Oracle and/or its affiliates. All rights reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.  Oracle designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Oracle in the LICENSE file that accompanied this code.
  *
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
  *
+ * You should have received a copy of the GNU General Public License version
+ * 2 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 
 package java.io;
@@ -28,10 +28,9 @@ package java.io;
 /**
  * A <code>PushbackInputStream</code> adds
  * functionality to another input stream, namely
- * the  ability to "push back" or "unread" bytes,
- * by storing pushed-back bytes in an internal buffer.
- * This is useful in situations where
- * it is convenient for a fragment of code
+ * the  ability to "push back" or "unread"
+ * one byte. This is useful in situations where
+ * it is  convenient for a fragment of code
  * to read an indefinite number of data bytes
  * that  are delimited by a particular byte
  * value; after reading the terminating byte,
@@ -47,13 +46,13 @@ package java.io;
  *
  * @author  David Connelly
  * @author  Jonathan Payne
- * @since   1.0
+ * @since   JDK1.0
  */
 public
 class PushbackInputStream extends FilterInputStream {
     /**
      * The pushback buffer.
-     * @since   1.1
+     * @since   JDK1.1
      */
     protected byte[] buf;
 
@@ -63,7 +62,7 @@ class PushbackInputStream extends FilterInputStream {
      * <code>buf.length</code>; when the buffer is full, <code>pos</code> is
      * equal to zero.
      *
-     * @since   1.1
+     * @since   JDK1.1
      */
     protected int pos;
 
@@ -78,14 +77,16 @@ class PushbackInputStream extends FilterInputStream {
     /**
      * Creates a <code>PushbackInputStream</code>
      * with a pushback buffer of the specified <code>size</code>,
-     * and saves its argument, the input stream
+     * and saves its  argument, the input stream
      * <code>in</code>, for later use. Initially,
-     * the pushback buffer is empty.
+     * there is no pushed-back byte  (the field
+     * <code>pushBack</code> is initialized to
+     * <code>-1</code>).
      *
      * @param  in    the input stream from which bytes will be read.
      * @param  size  the size of the pushback buffer.
      * @exception IllegalArgumentException if {@code size <= 0}
-     * @since  1.1
+     * @since  JDK1.1
      */
     public PushbackInputStream(InputStream in, int size) {
         super(in);
@@ -98,9 +99,11 @@ class PushbackInputStream extends FilterInputStream {
 
     /**
      * Creates a <code>PushbackInputStream</code>
-     * with a 1-byte pushback buffer, and saves its argument, the input stream
+     * and saves its  argument, the input stream
      * <code>in</code>, for later use. Initially,
-     * the pushback buffer is empty.
+     * there is no pushed-back byte  (the field
+     * <code>pushBack</code> is initialized to
+     * <code>-1</code>).
      *
      * @param   in   the input stream from which bytes will be read.
      */
@@ -221,7 +224,7 @@ class PushbackInputStream extends FilterInputStream {
      *            buffer for the specified number of bytes,
      *            or this input stream has been closed by
      *            invoking its {@link #close()} method.
-     * @since     1.1
+     * @since     JDK1.1
      */
     public void unread(byte[] b, int off, int len) throws IOException {
         ensureOpen();
@@ -243,7 +246,7 @@ class PushbackInputStream extends FilterInputStream {
      *            buffer for the specified number of bytes,
      *            or this input stream has been closed by
      *            invoking its {@link #close()} method.
-     * @since     1.1
+     * @since     JDK1.1
      */
     public void unread(byte[] b) throws IOException {
         unread(b, 0, b.length);
@@ -291,10 +294,10 @@ class PushbackInputStream extends FilterInputStream {
      *
      * @param      n  {@inheritDoc}
      * @return     {@inheritDoc}
-     * @throws     IOException  if the stream has been closed by
-     *             invoking its {@link #close()} method,
-     *             {@code in.skip(n)} throws an IOException,
-     *             or an I/O error occurs.
+     * @exception  IOException  if the stream does not support seek,
+     *            or the stream has been closed by
+     *            invoking its {@link #close()} method,
+     *            or an I/O error occurs.
      * @see        java.io.FilterInputStream#in
      * @see        java.io.InputStream#skip(long n)
      * @since      1.2

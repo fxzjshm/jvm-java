@@ -1,26 +1,26 @@
 /*
- * Copyright (c) 1995, 2017, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ * Copyright (c) 1995, 2013, Oracle and/or its affiliates. All rights reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.  Oracle designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Oracle in the LICENSE file that accompanied this code.
  *
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
  *
+ * You should have received a copy of the GNU General Public License version
+ * 2 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 
 package java.io;
@@ -48,7 +48,7 @@ package java.io;
  * may be thrown if the input stream has been
  * closed.
  *
- * <h3><a id="modified-utf-8">Modified UTF-8</a></h3>
+ * <h3><a name="modified-utf-8">Modified UTF-8</a></h3>
  * <p>
  * Implementations of the DataInput and DataOutput interfaces represent
  * Unicode strings in a format that is a slight modification of UTF-8.
@@ -59,9 +59,8 @@ package java.io;
  * far left-hand column.
  *
  * <blockquote>
- *   <table class="plain">
- *     <caption style="display:none">Bit values and bytes</caption>
- *     <tbody>
+ *   <table border="1" cellspacing="0" cellpadding="8"
+ *          summary="Bit values and bytes">
  *     <tr>
  *       <th colspan="9"><span style="font-weight:normal">
  *         All characters in the range {@code '\u005Cu0001'} to
@@ -72,9 +71,9 @@ package java.io;
  *       <th colspan="8" id="bit_a">Bit Values</th>
  *     </tr>
  *     <tr>
- *       <th id="byte1_a" style="text-align:left">Byte 1</th>
- *       <td style="text-align:center">0
- *       <td colspan="7" style="text-align:center">bits 6-0
+ *       <th id="byte1_a">Byte 1</th>
+ *       <td><center>0</center>
+ *       <td colspan="7"><center>bits 6-0</center>
  *     </tr>
  *     <tr>
  *       <th colspan="9"><span style="font-weight:normal">
@@ -87,17 +86,17 @@ package java.io;
  *       <th colspan="8" id="bit_b">Bit Values</th>
  *     </tr>
  *     <tr>
- *       <th id="byte1_b" style="text-align:left">Byte 1</th>
- *       <td style="text-align:center">1
- *       <td style="text-align:center">1
- *       <td style="text-align:center">0
- *       <td colspan="5" style="text-align:center">bits 10-6
+ *       <th id="byte1_b">Byte 1</th>
+ *       <td><center>1</center>
+ *       <td><center>1</center>
+ *       <td><center>0</center>
+ *       <td colspan="5"><center>bits 10-6</center>
  *     </tr>
  *     <tr>
- *       <th id="byte2_a" style="text-align:left">Byte 2</th>
- *       <td style="text-align:center">1
- *       <td style="text-align:center">0
- *       <td colspan="6" style="text-align:center">bits 5-0
+ *       <th id="byte2_a">Byte 2</th>
+ *       <td><center>1</center>
+ *       <td><center>0</center>
+ *       <td colspan="6"><center>bits 5-0</center>
  *     </tr>
  *     <tr>
  *       <th colspan="9"><span style="font-weight:normal">
@@ -109,26 +108,25 @@ package java.io;
  *       <th colspan="8"id="bit_c">Bit Values</th>
  *     </tr>
  *     <tr>
- *       <th id="byte1_c" style="text-align:left">Byte 1</th>
- *       <td style="text-align:center">1
- *       <td style="text-align:center">1
- *       <td style="text-align:center">1
- *       <td style="text-align:center">0
- *       <td colspan="4" style="text-align:center">bits 15-12
+ *       <th id="byte1_c">Byte 1</th>
+ *       <td><center>1</center>
+ *       <td><center>1</center>
+ *       <td><center>1</center>
+ *       <td><center>0</center>
+ *       <td colspan="4"><center>bits 15-12</center>
  *     </tr>
  *     <tr>
- *       <th id="byte2_b" style="text-align:left">Byte 2</th>
- *       <td style="text-align:center">1
- *       <td style="text-align:center">0
- *       <td colspan="6" style="text-align:center">bits 11-6
+ *       <th id="byte2_b">Byte 2</th>
+ *       <td><center>1</center>
+ *       <td><center>0</center>
+ *       <td colspan="6"><center>bits 11-6</center>
  *     </tr>
  *     <tr>
- *       <th id="byte3" style="text-align:left">Byte 3</th>
- *       <td style="text-align:center">1
- *       <td style="text-align:center">0
- *       <td colspan="6" style="text-align:center">bits 5-0
+ *       <th id="byte3">Byte 3</th>
+ *       <td><center>1</center>
+ *       <td><center>0</center>
+ *       <td colspan="6"><center>bits 5-0</center>
  *     </tr>
- *     </tbody>
  *   </table>
  * </blockquote>
  * <p>
@@ -145,7 +143,7 @@ package java.io;
  * @author  Frank Yellin
  * @see     java.io.DataInputStream
  * @see     java.io.DataOutput
- * @since   1.0
+ * @since   JDK1.0
  */
 public
 interface DataInput {
@@ -184,11 +182,10 @@ interface DataInput {
      * not all bytes of {@code b} have been
      * updated with data from the input stream.
      *
-     * @param   b   the buffer into which the data is read.
-     * @throws  NullPointerException if {@code b} is {@code null}.
-     * @throws  EOFException  if this stream reaches the end before reading
-     *          all the bytes.
-     * @throws  IOException   if an I/O error occurs.
+     * @param     b   the buffer into which the data is read.
+     * @exception  EOFException  if this stream reaches the end before reading
+     *               all the bytes.
+     * @exception  IOException   if an I/O error occurs.
      */
     void readFully(byte b[]) throws IOException;
 
@@ -229,16 +226,12 @@ interface DataInput {
      * and so on. The number of bytes read is,
      * at most, equal to {@code len}.
      *
-     * @param   b    the buffer into which the data is read.
-     * @param   off  an int specifying the offset in the data array {@code b}.
-     * @param   len  an int specifying the number of bytes to read.
-     * @throws  NullPointerException if {@code b} is {@code null}.
-     * @throws  IndexOutOfBoundsException if {@code off} is negative,
-     *          {@code len} is negative, or {@code len} is greater than
-     *          {@code b.length - off}.
-     * @throws  EOFException  if this stream reaches the end before reading
-     *          all the bytes.
-     * @throws  IOException   if an I/O error occurs.
+     * @param     b   the buffer into which the data is read.
+     * @param off  an int specifying the offset into the data.
+     * @param len  an int specifying the number of bytes to read.
+     * @exception  EOFException  if this stream reaches the end before reading
+     *               all the bytes.
+     * @exception  IOException   if an I/O error occurs.
      */
     void readFully(byte b[], int off, int len) throws IOException;
 
