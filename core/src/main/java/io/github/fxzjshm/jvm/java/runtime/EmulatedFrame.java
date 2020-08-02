@@ -787,22 +787,66 @@ public class EmulatedFrame extends VFrame {
                 //TODO impl
                 break;
             case 0xc4:// wide
-                //TODO impl
+                int code2 = reader.readUint16();
+                switch (code2) {
+                    case 0x15: // iload
+                    case 0x16: // lload
+                    case 0x17: // fload
+                    case 0x18: // dload
+                    case 0x19: // aload
+                        operandStack.push(localVars.get(reader.readUint16()));
+                        break;
+                    case 0x36: // istore
+                    case 0x37: // lstore
+                    case 0x38: // fstore
+                    case 0x39: // dstore
+                    case 0x3a: // astore
+                        localVars.put(reader.readUint16(), operandStack.pop());
+                        break;
+                    case 0xa9:// ret
+                        if (method.info.classFile.major <= 49) {
+                            branch((Integer) localVars.get(reader.readUint16()));
+                        } else {
+                            throw new RuntimeException("RET shouldn't appear when class file version is"
+                                    + method.info.classFile.major + "." + method.info.classFile.minor);
+                        }
+                        break;
+                    case 0x84: // iinc
+                        index = reader.readUint16();
+                        cst = reader.readUint16();
+                        localVars.put(index, (int) localVars.get(index) + cst);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Unknown bytecode " + Integer.toHexString(code2) + "after `wide`(0xc4)");
+                }
                 break;
             case 0xc5:// multianewarray
                 //TODO impl
                 break;
             case 0xc6:// ifnull
-                //TODO impl
+                address = reader.readInt16();
+                o1 = operandStack.pop();
+                if (o1 == null) branch(address);
                 break;
             case 0xc7:// ifnonnull
-                //TODO impl
+                address = reader.readInt16();
+                o1 = operandStack.pop();
+                if (o1 != null) branch(address);
                 break;
             case 0xc8:// goto_w
-                //TODO impl
+                address = reader.readInt32();
+                branch(address);
                 break;
             case 0xc9:// jsr_w
                 //TODO impl
+                if (method.info.classFile.major <= 49) {
+                    address = reader.readInt32();
+                    branch(address);
+                    operandStack.push(reader.getPos() + 5);
+                } else {
+                    throw new RuntimeException("JSR shouldn't appear when class file version is"
+                            + method.info.classFile.major + "." + method.info.classFile.minor);
+                }
                 break;
             case 0xca:// breakpoint
                 //TODO impl
