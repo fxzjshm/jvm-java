@@ -1,13 +1,14 @@
 apply plugin: "java"
-apply plugin: 'org.akhikhl.gretty'
+// apply plugin: 'org.akhikhl.gretty'
 
 import org.wisepersist.gradle.plugins.gwt.GwtSuperDev
+import org.gradle.plugins.javascript.envjs.http.simple.SimpleHttpFileServerFactory
 
-def HttpFileServer server = null
-def httpfilePort = 9090
+def server = null
+def httpfilePort = 8080
 
 gwt {
-    gwtVersion='2.8.0' // Should match the gwt version used for building the gwt backend
+    gwtVersion=project.ext.gwtVersion // Should match the gwt version used for building the gwt backend
     maxHeapSize="1G" // Default 256m is not enough for gwt compiler. GWT is HUNGRY
     minHeapSize="64M"
 
@@ -86,7 +87,7 @@ draftWar {
 
 task addSource {
     doLast {
-        sourceSets.main.compileClasspath += files(project(':core').sourceSets.main.allJava.srcDirs)
+        sourceSets.main.compileClasspath += files(project(':core').sourceSets.main.allJava.srcDirs) + files(project(':test-main').sourceSets.main.allJava.srcDirs) + files(project(':support-libgdx').sourceSets.main.allJava.srcDirs)
     }
 }
 

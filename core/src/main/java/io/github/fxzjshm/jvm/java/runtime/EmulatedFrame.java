@@ -86,9 +86,9 @@ public class EmulatedFrame extends VFrame {
                 Object c = ((EmulatedClass) (method.clazz)).rtcp.consts[index];
                 if (c instanceof Integer || c instanceof Float || c instanceof Long || c instanceof Double || c instanceof String) {
                     operandStack.push(c);
-                }else if (c instanceof ClassRef) {
+                } else if (c instanceof ClassRef) {
                     operandStack.push(((ClassRef) c).resolvedClass());// TODO ???
-                }else {
+                } else {
                     throw new UnsupportedOperationException("TODO: ldc"); // TODO: ldc
                 }
                 break;
@@ -674,12 +674,12 @@ public class EmulatedFrame extends VFrame {
             case 0xb3:// putstatic
                 index = reader.readUint16();
                 // TODO check this if there is ExternalField to be referenced.
-                EmulatedField field = (EmulatedField) ((FieldRef) (((EmulatedClass)method.clazz).rtcp.consts[index])).resolvedField();
+                EmulatedField field = (EmulatedField) ((FieldRef) (((EmulatedClass) method.clazz).rtcp.consts[index])).resolvedField();
                 if ((field.info.accessFlags & Bitmask.ACC_STATIC) == 0)
                     throw new IncompatibleClassChangeError(field.info.name + " is not a static field!");
                 switch (code) {
                     case 0xb2:// getstatic
-                        operandStack.push(((EmulatedClass)field.clazz).staticVars[field.slotId]);
+                        operandStack.push(((EmulatedClass) field.clazz).staticVars[field.slotId]);
                         break;
                     case 0xb3:// putstatic
                         if ((field.info.accessFlags & Bitmask.ACC_FINAL) != 0) {
@@ -688,7 +688,7 @@ public class EmulatedFrame extends VFrame {
                                         + field.info.name + " fron normal method "
                                         + method.clazz.name + "/" + method.info.name);
                         }
-                        ((EmulatedClass)field.clazz).staticVars[field.slotId] = operandStack.pop();
+                        ((EmulatedClass) field.clazz).staticVars[field.slotId] = operandStack.pop();
                         break;
                     default:
                         break;
@@ -697,7 +697,7 @@ public class EmulatedFrame extends VFrame {
             case 0xb4:// getfield
             case 0xb5:// putfield
                 index = reader.readUint16();
-                field = (EmulatedField) ((FieldRef) (((EmulatedClass)method.clazz).rtcp.consts[index])).resolvedField();
+                field = (EmulatedField) ((FieldRef) (((EmulatedClass) method.clazz).rtcp.consts[index])).resolvedField();
                 if ((field.info.accessFlags & Bitmask.ACC_STATIC) != 0)
                     throw new IncompatibleClassChangeError(field.info.name + " is a static field!");
                 switch (code) {
@@ -710,7 +710,7 @@ public class EmulatedFrame extends VFrame {
                             if (method.clazz != field.clazz || (!Objects.equals(method.info.name, "<init>")))
                                 throw new IllegalAccessError("Cannot init a final field "
                                         + field.info.name + " fron normal method "
-                                        + ((EmulatedClass)method.clazz).classFile.name + "/" + method.info.name);
+                                        + ((EmulatedClass) method.clazz).classFile.name + "/" + method.info.name);
                         }
                         Object val = operandStack.pop();
                         ref = (Instance) operandStack.pop();
@@ -738,7 +738,7 @@ public class EmulatedFrame extends VFrame {
                 break;
             case 0xbb:// new
                 index = reader.readUint16();
-                RuntimeConstantPool rcp = ((EmulatedClass)method.clazz).rtcp;
+                RuntimeConstantPool rcp = ((EmulatedClass) method.clazz).rtcp;
                 ClassRef classRef = (ClassRef) (rcp.consts[index]);
                 VClass clazz = classRef.resolvedClass();
                 if (((clazz.accessFlags & Bitmask.ACC_INTERFACE) != 0)
@@ -765,7 +765,7 @@ public class EmulatedFrame extends VFrame {
                 if (fieldRef == null)
                     break;
                 else {
-                    clazz = ((ClassRef) (((EmulatedClass)method.clazz).rtcp.consts[index])).resolvedClass();
+                    clazz = ((ClassRef) (((EmulatedClass) method.clazz).rtcp.consts[index])).resolvedClass();
                     if (!fieldRef.isInstanceOf(clazz))
                         throw new ClassCastException("Cannot cast " + fieldRef.className + " to " + clazz.name);
                 }
@@ -776,7 +776,7 @@ public class EmulatedFrame extends VFrame {
                 if (fieldRef == null)
                     operandStack.push(0);
                 else {
-                    clazz = ((ClassRef) (((EmulatedClass)method.clazz).rtcp.consts[index])).resolvedClass();
+                    clazz = ((ClassRef) (((EmulatedClass) method.clazz).rtcp.consts[index])).resolvedClass();
                     operandStack.push((fieldRef.isInstanceOf(clazz)) ? 1 : 0);
                 }
                 break;
@@ -808,7 +808,7 @@ public class EmulatedFrame extends VFrame {
                 //TODO impl
                 break;
             default:
-                throw new IllegalArgumentException(String.format("Unknown bytecode %x", code));
+                throw new IllegalArgumentException("Unknown bytecode " + Integer.toHexString(code));
         }
         nextPC += reader.sizeAfterLastReset;
     }

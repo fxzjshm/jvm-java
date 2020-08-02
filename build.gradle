@@ -24,7 +24,7 @@ allprojects{
     ext {
         gdxVersion = '1.9.10'
         junitVersion = '+'
-        gwtVersion = '2.9.0'
+        gwtVersion = '2.8.2'
         mainClass = 'io.github.fxzjshm.jvm.java.Main'
         mainClassName = mainClass
     }
@@ -73,6 +73,19 @@ project(":test-main"){
     apply plugin: 'java'
     dependencies {
         compile project(":core")
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
+    }
+}
+
+project(":test-desktop"){
+    apply plugin: 'java'
+    dependencies {
+        compile project(":support-desktop")
+        compile project(":test-main")
+        compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion:sources"
+        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     }
 }
 

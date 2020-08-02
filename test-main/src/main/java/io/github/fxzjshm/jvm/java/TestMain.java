@@ -1,6 +1,9 @@
 package io.github.fxzjshm.jvm.java;
 
-import java.util.Hashtable;
+import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
+
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,6 +14,8 @@ import io.github.fxzjshm.jvm.java.test.HelloWorldTest;
 import io.github.fxzjshm.jvm.java.test.TestRunnable;
 import io.github.fxzjshm.jvm.java.test.TestWrapper;
 
+import static com.badlogic.gdx.Application.LOG_DEBUG;
+
 public class TestMain {
     public static Map<TestWrapper, Boolean> isAvaliable;
     public static boolean isSuccess;
@@ -19,7 +24,7 @@ public class TestMain {
     }
 
     public static void main(String[] args) {
-        isAvaliable = new Hashtable<>();
+        isAvaliable = new HashMap<>();
         isSuccess = true;
         init();
         before();
@@ -92,7 +97,7 @@ public class TestMain {
                     try {
                         testRunnable.run();
                     } catch (Throwable throwable) {
-                        throwable.printStackTrace();
+                        Gdx.app.error("TestMain", throwable.toString());
                         isSuccess = false;
                     }
                 }
@@ -113,6 +118,15 @@ public class TestMain {
                     }
                 }
             }
+        }
+    }
+
+    public static class TestMainApplicationAdapter extends ApplicationAdapter {
+        @Override
+        public void create() {
+            Gdx.app.setLogLevel(LOG_DEBUG);
+            TestMain.main(null);
+            Gdx.app.exit();
         }
     }
 }
