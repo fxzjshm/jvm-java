@@ -1,10 +1,10 @@
 buildscript {
     repositories {
         mavenLocal()
-        if(System.getProperty("user.country").equals("CN")){
+        if (System.getProperty("user.country").equals("CN")) {
             maven { url "https://maven.aliyun.com/repository/central/" }
             maven { url "https://maven.aliyun.com/repository/google" }
-        }else{
+        } else {
             mavenCentral()
             google()
         }
@@ -12,28 +12,29 @@ buildscript {
     }
     dependencies {
         classpath 'org.wisepersist:gwt-gradle-plugin:1.0.13'
-        classpath "com.jtransc:jtransc-gradle-plugin:0.6.8"
+        classpath "com.jtransc:jtransc-gradle-plugin:0.6.7"
         classpath "org.akhikhl.gretty:gretty:+"
         classpath "org.eclipse.jdt.core.compiler:ecj:4.6.1"
     }
 }
 
-allprojects{
+allprojects {
     apply plugin: 'eclipse'
     apply plugin: 'idea'
     ext {
         gdxVersion = '1.9.10'
         junitVersion = '+'
         gwtVersion = '2.8.2'
-        mainClass = 'io.github.fxzjshm.jvm.java.Main'
+        mainClass = 'io.github.fxzjshm.jvm.java.test.DesktopTestMain'
         mainClassName = mainClass
+        jtranscVersion = '0.6.7'
     }
     repositories {
         mavenLocal()
-        if(System.getProperty("user.country").equals("CN")){
+        if (System.getProperty("user.country").equals("CN")) {
             maven { url "https://maven.aliyun.com/repository/central/" }
             maven { url "https://maven.aliyun.com/repository/google" }
-        }else{
+        } else {
             mavenCentral()
             google()
         }
@@ -41,8 +42,8 @@ allprojects{
     }
 }
 
-project(":core"){
-	apply from: '../includeCommon.gradle'
+project(":core") {
+    apply from: '../includeCommon.gradle'
     apply plugin: 'java'
     jar {
         manifest {
@@ -51,16 +52,16 @@ project(":core"){
     }
 }
 
-project(":support-desktop"){
-	apply from: '../includeCommon.gradle'
+project(":support-desktop") {
+    apply from: '../includeCommon.gradle'
     apply plugin: 'java'
     dependencies {
         compile project(":core")
     }
 }
 
-project(":support-libgdx"){
-	apply from: '../includeCommon.gradle'
+project(":support-libgdx") {
+    apply from: '../includeCommon.gradle'
     apply plugin: 'java'
     dependencies {
         compile project(":core")
@@ -68,7 +69,7 @@ project(":support-libgdx"){
     }
 }
 
-project(":test-main"){
+project(":test-main") {
     apply from: '../includeCommon.gradle'
     apply plugin: 'java'
     dependencies {
@@ -78,7 +79,7 @@ project(":test-main"){
     }
 }
 
-project(":test-desktop"){
+project(":test-desktop") {
     apply from: '../includeCommon.gradle'
     apply plugin: 'java'
     dependencies {
@@ -90,7 +91,7 @@ project(":test-desktop"){
     }
 }
 
-project(":test-gwt"){
+project(":test-gwt") {
     apply plugin: 'java'
     apply plugin: 'gwt'
     apply plugin: 'war'
@@ -102,15 +103,19 @@ project(":test-gwt"){
         compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
-        
+
     }
 }
 
-project(":test-jtransc"){
+project(":test-jtransc") {
     apply plugin: 'java'
     apply plugin: 'jtransc'
     dependencies {
         compile project(":support-desktop")
         compile project(":test-main")
+        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        jtransc "com.jtransc.gdx:gdx-backend-jtransc:$jtranscVersion"
     }
+    mainClassName = 'io.github.fxzjshm.jvm.java.test.JtranscTestMain'
 }

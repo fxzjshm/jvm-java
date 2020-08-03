@@ -68,9 +68,8 @@ public class TestMain {
                     testRunnable.run();
                 }
             } catch (Throwable throwable) {
-                isAvaliable.replace(entry.getKey(), false); // ignore this test.
-                // TODO check whether System.err is always available.
-                throwable.printStackTrace();
+                isAvaliable.put(entry.getKey(), false); // ignore this test.
+                Gdx.app.error("TestMain::before", throwable.getMessage());
 
                 // clean up
                 Set<TestRunnable> afterFunctions = entry.getKey().afterFunctions;
@@ -79,8 +78,7 @@ public class TestMain {
                         testRunnable.run();
                     } catch (Throwable t) {
                         // I have nothing to say......
-                        t.printStackTrace();
-                        // TODO same as above
+                        Gdx.app.error("TestMain::before", t.getMessage());
                     }
                 }
 
