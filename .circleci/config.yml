@@ -45,7 +45,8 @@ jobs:
       # run tests!
       - run: ./gradlew test-desktop:check
       - run: ./gradlew test-gwt:checkGwt
-      - run: ./gradlew test-jtransc:runCpp test-jtransc:runDart
+      # skipped for limited resource on ci
+      # - run: ./gradlew test-jtransc:runCpp test-jtransc:runDart
 
       - run:
           name: Save test results
