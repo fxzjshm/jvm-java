@@ -40,7 +40,7 @@ jobs:
       # Set up the location of the stable repository.
       - run: sudo sh -c 'curl https://storage.googleapis.com/download.dartlang.org/linux/debian/dart_stable.list > /etc/apt/sources.list.d/dart_stable.list'
       - run: sudo apt-get update
-      - run: sudo apt-get install dart g++ nodejs-legacy cmake automake libtool pkg-config
+      - run: sudo apt-get install dart g++ nodejs cmake automake libtool pkg-config
 
       # run tests!
       - run: gradle check test-gwt:checkGwt test-jtransc:runCpp test-jtransc:runDart
