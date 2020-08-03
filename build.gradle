@@ -79,6 +79,7 @@ project(":test-main"){
 }
 
 project(":test-desktop"){
+    apply from: '../includeCommon.gradle'
     apply plugin: 'java'
     dependencies {
         compile project(":support-desktop")

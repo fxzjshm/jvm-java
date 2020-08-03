@@ -43,9 +43,12 @@ jobs:
       - run: sudo apt-get install dart g++ nodejs cmake automake libtool pkg-config
 
       # run tests!
-      - run: ./gradlew check test-gwt:checkGwt test-jtransc:runCpp test-jtransc:runDart
+      - run: ./gradlew test-desktop:check
+      - run: ./gradlew test-gwt:checkGwt
+      - run: ./gradlew test-jtransc:runCpp test-jtransc:runDart
+
       - run:
-          name: Save test results 
+          name: Save test results
           command: |
             mkdir -p ~/junit/
             find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/junit/ \;

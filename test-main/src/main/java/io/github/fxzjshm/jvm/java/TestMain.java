@@ -23,7 +23,7 @@ public class TestMain {
     private TestMain() {
     }
 
-    public static void main(String[] args) {
+    protected static void main(String[] args) {
         isAvaliable = new HashMap<>();
         isSuccess = true;
         init();
