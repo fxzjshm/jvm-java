@@ -10,6 +10,7 @@ import io.github.fxzjshm.jvm.java.classfile.ByteArrayReader;
 import io.github.fxzjshm.jvm.java.runtime.data.EmulatedClass;
 import io.github.fxzjshm.jvm.java.runtime.data.EmulatedField;
 import io.github.fxzjshm.jvm.java.runtime.data.EmulatedMethod;
+import io.github.fxzjshm.jvm.java.runtime.data.ExternalFrame;
 import io.github.fxzjshm.jvm.java.runtime.data.Instance;
 import io.github.fxzjshm.jvm.java.runtime.data.RuntimeConstantPool;
 import io.github.fxzjshm.jvm.java.runtime.ref.ClassRef;
@@ -653,22 +654,22 @@ public class EmulatedFrame extends VFrame {
                 branch(defaultOffset);
                 break;
             case 0xac:// ireturn
-                //TODO impl
-                break;
             case 0xad:// lreturn
-                //TODO impl
-                break;
             case 0xae:// freturn
-                //TODO impl
-                break;
             case 0xaf:// dreturn
-                //TODO impl
-                break;
             case 0xb0:// areturn
-                //TODO impl
+                EmulatedFrame currentFrame = (EmulatedFrame) thread.stack.pop();
+                VFrame invokerFrame = thread.stack.peek();
+                Object retVal = currentFrame.operandStack.pop();
+                if (invokerFrame instanceof EmulatedFrame) {
+                    ((EmulatedFrame) invokerFrame).operandStack.push(retVal);
+                } else if (invokerFrame instanceof ExternalFrame) {
+                    // TODO impl
+                    throw new UnsupportedOperationException("Currently not supporting returning value to external methods");
+                }
                 break;
             case 0xb1:// return
-                //TODO impl
+                thread.stack.pop();
                 break;
             case 0xb2:// getstatic
             case 0xb3:// putstatic
