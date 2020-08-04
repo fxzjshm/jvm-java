@@ -698,6 +698,7 @@ public class EmulatedFrame extends VFrame {
             case 0xb4:// getfield
             case 0xb5:// putfield
                 index = reader.readUint16();
+                // TODO check this if there is ExternalField to be referenced.
                 field = (EmulatedField) ((FieldRef) (((EmulatedClass) method.clazz).rtcp.consts[index])).resolvedField();
                 if ((field.info.accessFlags & Bitmask.ACC_STATIC) != 0)
                     throw new IncompatibleClassChangeError(field.info.name + " is a static field!");
