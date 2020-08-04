@@ -22,11 +22,11 @@ public class EmulatedFrame extends VFrame {
     /**
      * Refers to the thread that contains this frame.
      */
-    public Thread thread;
+    public EmulatedThread thread;
     private EmulatedMethod method;
     public ByteArrayReader reader;
 
-    public EmulatedFrame(Thread thread, EmulatedMethod method) {
+    public EmulatedFrame(EmulatedThread thread, EmulatedMethod method) {
         this.thread = thread;
         this.method = method;
         reader = new ByteArrayReader(method.codeAttribute.code);

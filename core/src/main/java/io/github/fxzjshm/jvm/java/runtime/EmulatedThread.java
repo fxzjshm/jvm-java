@@ -4,16 +4,16 @@ import java.util.Stack;
 
 import io.github.fxzjshm.jvm.java.api.VFrame;
 
-public class Thread {
+public class EmulatedThread {
     public VirtualMachine vm;
     public Stack<VFrame> stack;
 
-    public Thread(VirtualMachine vm) {
+    public EmulatedThread(VirtualMachine vm) {
         this.vm = vm;
         stack = new Stack<>();
     }
 
-    public VFrame currentFrame(){
+    public VFrame currentFrame() {
         return stack.peek();
     }
 }
