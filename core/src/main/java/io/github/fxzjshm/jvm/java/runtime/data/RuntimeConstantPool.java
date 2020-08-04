@@ -3,12 +3,21 @@ package io.github.fxzjshm.jvm.java.runtime.data;
 import io.github.fxzjshm.jvm.java.api.VClass;
 import io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool;
 import io.github.fxzjshm.jvm.java.classfile.cp.MemberRefInfo;
-import io.github.fxzjshm.jvm.java.runtime.ref.InterfaceMethodRef;
 import io.github.fxzjshm.jvm.java.runtime.ref.ClassRef;
 import io.github.fxzjshm.jvm.java.runtime.ref.FieldRef;
+import io.github.fxzjshm.jvm.java.runtime.ref.InterfaceMethodRef;
 import io.github.fxzjshm.jvm.java.runtime.ref.MethodRef;
 
-import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.*;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_Class;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_Double;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_Fieldref;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_Float;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_Integer;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_InterfaceMethodref;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_Long;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_Methodref;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_String;
+import static io.github.fxzjshm.jvm.java.classfile.cp.ConstantPool.ConstantInfo.CONSTANT_Utf8;
 
 public class RuntimeConstantPool {
     public VClass clazz;
@@ -41,7 +50,7 @@ public class RuntimeConstantPool {
                     o = new MethodRef(this, (MemberRefInfo) cp.infos[i].info);
                     break;
                 case CONSTANT_InterfaceMethodref:
-                    o = new InterfaceMethodRef();
+                    o = new InterfaceMethodRef(this, (MemberRefInfo) cp.infos[i].info);
                     break;
                 /*
                 TODO:

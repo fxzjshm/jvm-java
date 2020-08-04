@@ -2,8 +2,8 @@ package io.github.fxzjshm.jvm.java.runtime.ref;
 
 import java.util.Objects;
 
-import io.github.fxzjshm.jvm.java.api.VMethod;
 import io.github.fxzjshm.jvm.java.api.VClass;
+import io.github.fxzjshm.jvm.java.api.VMethod;
 import io.github.fxzjshm.jvm.java.classfile.Bitmask;
 import io.github.fxzjshm.jvm.java.classfile.cp.MemberRefInfo;
 import io.github.fxzjshm.jvm.java.runtime.data.RuntimeConstantPool;
@@ -37,17 +37,16 @@ public class MethodRef extends MemberRef {
         }
     }
 
-    private static class MethodLookup {
-        private static VMethod lookupMethod(VClass clazz, String name, String descriptor) {
+    public static class MethodLookup {
+        public static VMethod lookupMethod(VClass clazz, String name, String descriptor) {
             VMethod method = lookupMethodInClass(clazz, name, descriptor);
             if (method == null) {
-                return lookupMethodInInterfaces(clazz, name, descriptor);
-            } else {
-                return method;
+                method = lookupMethodInInterfaces(clazz, name, descriptor);
             }
+            return method;
         }
 
-        private static VMethod lookupMethodInClass(VClass clazz, String name, String descriptor) {
+        public static VMethod lookupMethodInClass(VClass clazz, String name, String descriptor) {
             for (VClass c = clazz; c != null; c = c.superClass) {
                 for (VMethod method : c.methods) {
                     if (checkMethod(method, name, descriptor)) {
@@ -58,7 +57,7 @@ public class MethodRef extends MemberRef {
             return null;
         }
 
-        private static VMethod lookupMethodInInterfaces(VClass clazz, String name, String descriptor) {
+        public static VMethod lookupMethodInInterfaces(VClass clazz, String name, String descriptor) {
             for (VClass iface : clazz.interfaces) {
                 for (VMethod method : iface.methods) {
                     if (checkMethod(method, name, descriptor)) {
@@ -72,7 +71,7 @@ public class MethodRef extends MemberRef {
 
         }
 
-        private static boolean checkMethod(VMethod method, String name, String descriptor) {
+        public static boolean checkMethod(VMethod method, String name, String descriptor) {
             return Objects.equals(method.name(), name) && Objects.equals(method.descriptor(), descriptor);
         }
     }
