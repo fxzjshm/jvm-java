@@ -120,11 +120,20 @@ public class TestMain {
     }
 
     public static class TestMainApplicationAdapter extends ApplicationAdapter {
+        public boolean running = true;
+        public Throwable throwable = null;
+
         @Override
         public void create() {
             Gdx.app.setLogLevel(LOG_DEBUG);
-            TestMain.main(null);
-            Gdx.app.exit();
+            try {
+                TestMain.main(null);
+            } catch (Throwable t) {
+                throwable = t;
+            } finally {
+                running = false;
+                Gdx.app.exit();
+            }
         }
     }
 }

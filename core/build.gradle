@@ -7,6 +7,7 @@ import java.nio.file.SimpleFileVisitor
 import java.nio.file.attribute.BasicFileAttributes
 
 sourceCompatibility = '1.7'
+sourceSets.main.java.srcDirs = [ "src/main/java/" ]
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 task compileClassInResources() {

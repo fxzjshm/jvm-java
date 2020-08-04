@@ -15,7 +15,7 @@ public class ResourceClassReader {
 
     public static ResourceClassReader INSTANCE = new ResourceClassReader();
 
-    public static String baseDir = "core/src/test/resources";
+    public static String baseDir = "../core/src/test/resources";
 
     public static Set<FileHandle> searchFile(FilenameFilter filter, FileHandle dir) {
         Gdx.app.log("ResourceClassReader", "Searching " + ((SuffixFilter) filter).suffix + " file in: " + dir.path());
@@ -47,6 +47,7 @@ public class ResourceClassReader {
             }
         } else {
             */
+
         Set<FileHandle> classes = searchFile(new SuffixFilter("class"), Gdx.files.internal(baseDir));
         Set<FileHandle> clazzes = searchFile(new SuffixFilter("bytecode"), Gdx.files.internal(baseDir));
         classes.addAll(clazzes);

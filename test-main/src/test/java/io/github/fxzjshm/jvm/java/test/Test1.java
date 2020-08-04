@@ -1,5 +1,6 @@
 package io.github.fxzjshm.jvm.java.test;
 
+@Deprecated
 public class Test1 {
 
     @Ignore
