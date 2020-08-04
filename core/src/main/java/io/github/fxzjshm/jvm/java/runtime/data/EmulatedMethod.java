@@ -8,13 +8,13 @@ import io.github.fxzjshm.jvm.java.classfile.attrinfo.CodeAttribute;
 
 public class EmulatedMethod extends EmulatedMember implements VMethod {
 
-    public byte[] code;
+    public CodeAttribute codeAttribute;
 
     public EmulatedMethod(MemberInfo info, VClass clazz) {
-    	super(info,clazz);
+        super(info, clazz);
         for (AttributeInfos.AttributeInfo attributeInfo : info.attributes) {
             if (attributeInfo instanceof CodeAttribute) {
-                code = ((CodeAttribute) attributeInfo).code;
+                codeAttribute = (CodeAttribute) attributeInfo;
             }
         }
         //TODO Reflect.methodMap.put(info.name, this);

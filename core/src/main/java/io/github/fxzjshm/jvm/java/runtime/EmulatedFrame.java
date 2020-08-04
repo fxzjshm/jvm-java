@@ -1,7 +1,6 @@
 package io.github.fxzjshm.jvm.java.runtime;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import io.github.fxzjshm.jvm.java.api.VClass;
@@ -17,7 +16,7 @@ import io.github.fxzjshm.jvm.java.runtime.ref.ClassRef;
 import io.github.fxzjshm.jvm.java.runtime.ref.FieldRef;
 
 public class EmulatedFrame extends VFrame {
-    public Map<Integer, Object> localVars = new LinkedHashMap<>();
+    public ArrayList<Object> localVars;
     private OperandStack<Object> operandStack = new OperandStack<>();
     private int nextPC;
     /**
@@ -30,7 +29,8 @@ public class EmulatedFrame extends VFrame {
     public EmulatedFrame(Thread thread, EmulatedMethod method) {
         this.thread = thread;
         this.method = method;
-        reader = new ByteArrayReader(method.code);
+        reader = new ByteArrayReader(method.codeAttribute.code);
+        localVars = new ArrayList<>(method.codeAttribute.maxLocals);
     }
 
     private void branch(int offset) {
@@ -158,37 +158,37 @@ public class EmulatedFrame extends VFrame {
             case 0x38: // fstore
             case 0x39: // dstore
             case 0x3a: // astore
-                localVars.put(reader.readUint8(), operandStack.pop());
+                localVars.set(reader.readUint8(), operandStack.pop());
                 break;
             case 0x3b:
             case 0x3c:
             case 0x3d:
             case 0x3e: // istore_<n>
-                localVars.put(code - 0x3b, operandStack.pop());
+                localVars.set(code - 0x3b, operandStack.pop());
                 break;
             case 0x3f:
             case 0x40:
             case 0x41:
             case 0x42: // lstore_<n>
-                localVars.put(code - 0x3f, operandStack.pop());
+                localVars.set(code - 0x3f, operandStack.pop());
                 break;
             case 0x43:
             case 0x44:
             case 0x45:
             case 0x46: // fstore_<n>
-                localVars.put(code - 0x43, operandStack.pop());
+                localVars.set(code - 0x43, operandStack.pop());
                 break;
             case 0x47:
             case 0x48:
             case 0x49:
             case 0x4a: // dstore_<n>
-                localVars.put(code - 0x47, operandStack.pop());
+                localVars.set(code - 0x47, operandStack.pop());
                 break;
             case 0x4b:
             case 0x4c:
             case 0x4d:
             case 0x4e: // astore_<n>
-                localVars.put(code - 0x4b, operandStack.pop());
+                localVars.set(code - 0x4b, operandStack.pop());
                 break;
             case 0x4f: // iastore
                 //TODO impl
@@ -454,7 +454,7 @@ public class EmulatedFrame extends VFrame {
             case 0x84: // iinc
                 index = reader.readUint8();
                 int cst = reader.readInt8();
-                localVars.put(index, (int) localVars.get(index) + cst);
+                localVars.set(index, (int) localVars.get(index) + cst);
                 break;
             case 0x85: // i2l
                 operandStack.push((long) ((int) operandStack.pop()));
@@ -801,7 +801,7 @@ public class EmulatedFrame extends VFrame {
                     case 0x38: // fstore
                     case 0x39: // dstore
                     case 0x3a: // astore
-                        localVars.put(reader.readUint16(), operandStack.pop());
+                        localVars.set(reader.readUint16(), operandStack.pop());
                         break;
                     case 0xa9:// ret
                         if (method.info.classFile.major <= 49) {
@@ -814,7 +814,7 @@ public class EmulatedFrame extends VFrame {
                     case 0x84: // iinc
                         index = reader.readUint16();
                         cst = reader.readUint16();
-                        localVars.put(index, (int) localVars.get(index) + cst);
+                        localVars.set(index, (int) localVars.get(index) + cst);
                         break;
                     default:
                         throw new IllegalArgumentException("Unknown bytecode " + Integer.toHexString(code2) + "after `wide`(0xc4)");
