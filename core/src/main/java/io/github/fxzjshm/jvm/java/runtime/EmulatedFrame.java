@@ -353,7 +353,7 @@ public class EmulatedFrame extends VFrame {
             case 0x6f: // ddiv
                 d1 = (Double) operandStack.pop();
                 d2 = (Double) operandStack.pop();
-                operandStack.push(d2 - d1);
+                operandStack.push(d2 / d1);
                 break;
             case 0x70: // irem
                 i1 = (Integer) operandStack.pop();
